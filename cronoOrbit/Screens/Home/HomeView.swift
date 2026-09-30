@@ -5,6 +5,7 @@ import SwiftUI
 struct HomeView: View {
     @Environment(EventStore.self) private var store
     @State private var showNew = false
+    @State private var showImport = false
 
     var body: some View {
         let today = store.events(on: .now)
@@ -29,11 +30,15 @@ struct HomeView: View {
             .navigationTitle(Date.now.formatted(.dateTime.weekday(.wide).day()))
             .navigationDestination(for: Event.ID.self) { EventDetailView(id: $0) }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Importa calendari", systemImage: "square.and.arrow.down") { showImport = true }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Aggiungi impegno", systemImage: "plus") { showNew = true }
                 }
             }
             .sheet(isPresented: $showNew) { NewEventSheet() }
+            .sheet(isPresented: $showImport) { ImportCalendarsView() }
         }
     }
 }

@@ -24,6 +24,7 @@ struct Event: Identifiable, Hashable {
     var notes = ""
     var invited: [String] = []
     var reminderMinutes = 15
+    var externalID: String? = nil
 
     var startMinutes: Double { Event.minutes(start) }
     var endMinutes: Double { Event.minutes(end) }
@@ -53,6 +54,13 @@ final class EventStore {
     }
     func add(_ e: Event) { events.append(e) }
     func delete(_ id: Event.ID) { events.removeAll { $0.id == id } }
+    @discardableResult
+    func importEvents(_ new: [Event]) -> Int {
+        let known = Set(events.compactMap(\.externalID))
+        let fresh = new.filter { $0.externalID.map { !known.contains($0) } ?? true }
+        events.append(contentsOf: fresh)
+        return fresh.count
+    }
 
     // Dati di esempio: sostituiscili con la tua persistenza (SwiftData, CloudKit, EventKit…)
     static func sample() -> [Event] {
