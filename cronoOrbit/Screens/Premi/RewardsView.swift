@@ -44,6 +44,7 @@ struct RewardsView: View {
                 .padding()
             }
             .background(AppBackground())
+            .hideTopBarBand()
             .navigationTitle("Premi")
         }
     }

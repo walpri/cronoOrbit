@@ -39,7 +39,7 @@ struct DayRing: View {
         TimelineView(.everyMinute) { ctx in
             let now = Event.minutes(ctx.date)
             ZStack {
-                Circle().stroke(.white.opacity(0.16), lineWidth: 34)
+                Circle().stroke(.primary.opacity(0.15), lineWidth: 34)
                 ForEach(events) { e in
                     ArcShape(from: e.startMinutes, to: max(e.endMinutes, e.startMinutes + 30))
                         .stroke(LinearGradient(colors: [.cyan, .blue], startPoint: .topLeading, endPoint: .bottomTrailing),
@@ -76,7 +76,7 @@ struct DayRing: View {
         VStack(spacing: 4) {
             Text(top).font(.caption).foregroundStyle(.secondary).lineLimit(1)
             Text(big).font(.system(size: 38, weight: .bold, design: .rounded)).minimumScaleFactor(0.6).lineLimit(1)
-            Text(bottom).font(.subheadline.weight(.semibold)).foregroundStyle(.white.opacity(0.85))
+            Text(bottom).font(.subheadline.weight(.semibold)).foregroundStyle(.primary.opacity(0.85))
         }
     }
 }
