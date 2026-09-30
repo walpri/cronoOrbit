@@ -8,7 +8,7 @@ struct cronoOrbitApp: App {
         WindowGroup {
             RootView()
                 .environment(store)
-                .preferredColorScheme(.dark)
+                
         }
     }
 }

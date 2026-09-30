@@ -17,16 +17,19 @@ extension View {
     }
 }
 
-/// Il vetro si vede solo se dietro c'è qualcosa di colorato.
 struct AppBackground: View {
+    @Environment(\.colorScheme) private var scheme
+
     var body: some View {
+        let dark = scheme == .dark
         ZStack {
-            Color(red: 0.09, green: 0.06, blue: 0.23)
-            RadialGradient(colors: [.orange.opacity(0.8), .clear], center: .topLeading, startRadius: 0, endRadius: 380)
-            RadialGradient(colors: [.pink.opacity(0.7), .clear], center: .topTrailing, startRadius: 0, endRadius: 340)
-            RadialGradient(colors: [.cyan.opacity(0.6), .clear], center: .bottomLeading, startRadius: 0, endRadius: 380)
-            RadialGradient(colors: [.indigo.opacity(0.8), .clear], center: .bottomTrailing, startRadius: 0, endRadius: 380)
+            dark ? Color(red: 0.09, green: 0.06, blue: 0.23) : Color(red: 0.96, green: 0.95, blue: 1.0)
+            RadialGradient(colors: [.orange.opacity(dark ? 0.8 : 0.35), .clear], center: .topLeading, startRadius: 0, endRadius: 380)
+            RadialGradient(colors: [.pink.opacity(dark ? 0.7 : 0.30), .clear], center: .topTrailing, startRadius: 0, endRadius: 340)
+            RadialGradient(colors: [.cyan.opacity(dark ? 0.6 : 0.30), .clear], center: .bottomLeading, startRadius: 0, endRadius: 380)
+            RadialGradient(colors: [.indigo.opacity(dark ? 0.8 : 0.30), .clear], center: .bottomTrailing, startRadius: 0, endRadius: 380)
         }
         .ignoresSafeArea()
     }
 }
+ 
