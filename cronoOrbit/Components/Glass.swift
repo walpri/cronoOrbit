@@ -17,6 +17,19 @@ extension View {
     }
 }
 
+extension View {
+    /// Toglie la banda che appare sotto la barra del titolo quando il contenuto scorre.
+    @ViewBuilder
+    func hideTopBarBand() -> some View {
+        if #available(iOS 26, *) {
+            self.scrollEdgeEffectHidden(true, for: .top)
+                .toolbarBackground(.hidden, for: .navigationBar)
+        } else {
+            self.toolbarBackground(.hidden, for: .navigationBar)
+        }
+    }
+}
+
 struct AppBackground: View {
     @Environment(\.colorScheme) private var scheme
 

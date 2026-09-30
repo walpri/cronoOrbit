@@ -27,6 +27,7 @@ struct HomeView: View {
                 .padding()
             }
             .background(AppBackground())
+            .hideTopBarBand()
             .navigationTitle(Date.now.formatted(.dateTime.weekday(.wide).day()))
             .navigationDestination(for: Event.ID.self) { EventDetailView(id: $0) }
             .toolbar {
