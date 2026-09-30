@@ -10,10 +10,10 @@ struct RewardsView: View {
         let sport = store.events.filter { $0.category == .health }.count
         let focus = store.events.filter { $0.category == .focus }.count
         // Regole di esempio: sostituiscile con la tua logica
-        let medals: [(String, String, Color, Bool)] = [
-            ("Studio", "books.vertical.fill", .gray, done >= 2),
-            ("Sport", "dumbbell.fill", .yellow, sport >= 1),
-            ("Deep focus", "scope", .orange, focus >= 2)
+        let medals: [(String, String, Bool)] = [
+            ("Studio", "Image", done >= 2),
+            ("Sport", "dumbbell.fill", sport >= 1),
+            ("Deep focus", "scope", focus >= 2)
         ]
         NavigationStack {
             ScrollView {
@@ -30,12 +30,11 @@ struct RewardsView: View {
                         ForEach(medals, id: \.0) { m in
                             VStack(spacing: 10) {
                                 Text(m.0.uppercased()).font(.subheadline.weight(.bold))
-                                Image(systemName: m.1).font(.system(size: 30)).foregroundStyle(.white)
+                                Image(m.1).font(.system(size: 30)).foregroundStyle(.white)
                                     .frame(width: 74, height: 74)
-                                    .background(RadialGradient(colors: [.white, m.2], center: .topLeading, startRadius: 2, endRadius: 70), in: Circle())
                                     .shadow(color: .black.opacity(0.25), radius: 8, y: 6)
-                                    .saturation(m.3 ? 1 : 0).opacity(m.3 ? 1 : 0.6)
-                                Text(m.3 ? "Obiettivo raggiunto" : "Da conquistare").font(.footnote)
+                                    .saturation(m.2 ? 1 : 0).opacity(m.2 ? 1 : 0.6)
+                                Text(m.2 ? "Obiettivo raggiunto" : "Da conquistare").font(.footnote)
                             }
                             .padding(16).frame(maxWidth: .infinity).glass(26)
                         }
