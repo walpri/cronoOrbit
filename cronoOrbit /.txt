@@ -1,1 +1,0 @@
-frame(maxWidth: .infinity, maxHeight: .infinity)
