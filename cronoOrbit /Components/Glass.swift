@@ -1,4 +1,3 @@
-/*
 import SwiftUI
 
 // MARK: - Liquid Glass (iOS 26) con fallback su Material
@@ -31,6 +30,7 @@ extension View {
     }
 }
 
+/// Il vetro si vede solo se dietro c'è qualcosa di colorato.
 struct AppBackground: View {
     @Environment(\.colorScheme) private var scheme
 
@@ -46,5 +46,3 @@ struct AppBackground: View {
         .ignoresSafeArea()
     }
 }
- 
- */

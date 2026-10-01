@@ -6,17 +6,46 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		50474C43306E4D5F00AAE6ED /* DayRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C2B306E4D5F00AAE6ED /* DayRing.swift */; };
+		50474C44306E4D5F00AAE6ED /* NewEventSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C38306E4D5F00AAE6ED /* NewEventSheet.swift */; };
+		50474C45306E4D5F00AAE6ED /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C2E306E4D5F00AAE6ED /* Models.swift */; };
+		50474C46306E4D5F00AAE6ED /* ImportCalendarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C36306E4D5F00AAE6ED /* ImportCalendarsView.swift */; };
+		50474C47306E4D5F00AAE6ED /* CalendarImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C35306E4D5F00AAE6ED /* CalendarImporter.swift */; };
+		50474C48306E4D5F00AAE6ED /* cronoOrbitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C28306E4D5F00AAE6ED /* cronoOrbitApp.swift */; };
+		50474C49306E4D5F00AAE6ED /* RewardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C3A306E4D5F00AAE6ED /* RewardsView.swift */; };
+		50474C4A306E4D5F00AAE6ED /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C33306E4D5F00AAE6ED /* HomeView.swift */; };
+		50474C4B306E4D5F00AAE6ED /* Glass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C2C306E4D5F00AAE6ED /* Glass.swift */; };
+		50474C4C306E4D5F00AAE6ED /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C29306E4D5F00AAE6ED /* RootView.swift */; };
+		50474C4D306E4D5F00AAE6ED /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C3D306E4D5F00AAE6ED /* WeekView.swift */; };
+		50474C4E306E4D5F00AAE6ED /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C3C306E4D5F00AAE6ED /* MonthGridView.swift */; };
+		50474C4F306E4D5F00AAE6ED /* EventRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C32306E4D5F00AAE6ED /* EventRow.swift */; };
+		50474C50306E4D5F00AAE6ED /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50474C30306E4D5F00AAE6ED /* EventDetailView.swift */; };
+		50474C51306E4D5F00AAE6ED /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 50474C40306E4D5F00AAE6ED /* InfoPlist.xcstrings */; };
+		50474C52306E4D5F00AAE6ED /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 50474C41306E4D5F00AAE6ED /* Localizable.xcstrings */; };
+		50474C56306E514E00AAE6ED /* assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50474C55306E514E00AAE6ED /* assets.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		50474C28306E4D5F00AAE6ED /* cronoOrbitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cronoOrbitApp.swift; sourceTree = "<group>"; };
+		50474C29306E4D5F00AAE6ED /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		50474C2B306E4D5F00AAE6ED /* DayRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayRing.swift; sourceTree = "<group>"; };
+		50474C2C306E4D5F00AAE6ED /* Glass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Glass.swift; sourceTree = "<group>"; };
+		50474C2E306E4D5F00AAE6ED /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		50474C30306E4D5F00AAE6ED /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
+		50474C32306E4D5F00AAE6ED /* EventRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRow.swift; sourceTree = "<group>"; };
+		50474C33306E4D5F00AAE6ED /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		50474C35306E4D5F00AAE6ED /* CalendarImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarImporter.swift; sourceTree = "<group>"; };
+		50474C36306E4D5F00AAE6ED /* ImportCalendarsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportCalendarsView.swift; sourceTree = "<group>"; };
+		50474C38306E4D5F00AAE6ED /* NewEventSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventSheet.swift; sourceTree = "<group>"; };
+		50474C3A306E4D5F00AAE6ED /* RewardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsView.swift; sourceTree = "<group>"; };
+		50474C3C306E4D5F00AAE6ED /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
+		50474C3D306E4D5F00AAE6ED /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
+		50474C40306E4D5F00AAE6ED /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		50474C41306E4D5F00AAE6ED /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		50474C55306E514E00AAE6ED /* assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = assets.xcassets; sourceTree = "<group>"; };
 		5E44F534306CF8370082727A /* cronoOrbit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cronoOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		5E44F536306CF8370082727A /* cronoOrbit */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = cronoOrbit;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5E44F531306CF8370082727A /* Frameworks */ = {
@@ -27,10 +56,114 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		50474C2A306E4D5F00AAE6ED /* App */ = {
+			isa = PBXGroup;
+			children = (
+				50474C28306E4D5F00AAE6ED /* cronoOrbitApp.swift */,
+				50474C29306E4D5F00AAE6ED /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		50474C2D306E4D5F00AAE6ED /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				50474C2B306E4D5F00AAE6ED /* DayRing.swift */,
+				50474C2C306E4D5F00AAE6ED /* Glass.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		50474C2F306E4D5F00AAE6ED /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				50474C2E306E4D5F00AAE6ED /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		50474C31306E4D5F00AAE6ED /* DettaglioEvento */ = {
+			isa = PBXGroup;
+			children = (
+				50474C30306E4D5F00AAE6ED /* EventDetailView.swift */,
+			);
+			path = DettaglioEvento;
+			sourceTree = "<group>";
+		};
+		50474C34306E4D5F00AAE6ED /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				50474C32306E4D5F00AAE6ED /* EventRow.swift */,
+				50474C33306E4D5F00AAE6ED /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		50474C37306E4D5F00AAE6ED /* ImportaCalendari */ = {
+			isa = PBXGroup;
+			children = (
+				50474C35306E4D5F00AAE6ED /* CalendarImporter.swift */,
+				50474C36306E4D5F00AAE6ED /* ImportCalendarsView.swift */,
+			);
+			path = ImportaCalendari;
+			sourceTree = "<group>";
+		};
+		50474C39306E4D5F00AAE6ED /* NuovoEvento */ = {
+			isa = PBXGroup;
+			children = (
+				50474C38306E4D5F00AAE6ED /* NewEventSheet.swift */,
+			);
+			path = NuovoEvento;
+			sourceTree = "<group>";
+		};
+		50474C3B306E4D5F00AAE6ED /* Premi */ = {
+			isa = PBXGroup;
+			children = (
+				50474C3A306E4D5F00AAE6ED /* RewardsView.swift */,
+			);
+			path = Premi;
+			sourceTree = "<group>";
+		};
+		50474C3E306E4D5F00AAE6ED /* Settimana */ = {
+			isa = PBXGroup;
+			children = (
+				50474C3C306E4D5F00AAE6ED /* MonthGridView.swift */,
+				50474C3D306E4D5F00AAE6ED /* WeekView.swift */,
+			);
+			path = Settimana;
+			sourceTree = "<group>";
+		};
+		50474C3F306E4D5F00AAE6ED /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				50474C31306E4D5F00AAE6ED /* DettaglioEvento */,
+				50474C34306E4D5F00AAE6ED /* Home */,
+				50474C37306E4D5F00AAE6ED /* ImportaCalendari */,
+				50474C39306E4D5F00AAE6ED /* NuovoEvento */,
+				50474C3B306E4D5F00AAE6ED /* Premi */,
+				50474C3E306E4D5F00AAE6ED /* Settimana */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		50474C42306E4D5F00AAE6ED /* cronoOrbit  */ = {
+			isa = PBXGroup;
+			children = (
+				50474C2A306E4D5F00AAE6ED /* App */,
+				50474C2D306E4D5F00AAE6ED /* Components */,
+				50474C2F306E4D5F00AAE6ED /* Models */,
+				50474C3F306E4D5F00AAE6ED /* Screens */,
+				50474C40306E4D5F00AAE6ED /* InfoPlist.xcstrings */,
+				50474C41306E4D5F00AAE6ED /* Localizable.xcstrings */,
+				50474C55306E514E00AAE6ED /* assets.xcassets */,
+			);
+			path = "cronoOrbit ";
+			sourceTree = "<group>";
+		};
 		5E44F52B306CF8370082727A = {
 			isa = PBXGroup;
 			children = (
-				5E44F536306CF8370082727A /* cronoOrbit */,
+				50474C42306E4D5F00AAE6ED /* cronoOrbit  */,
 				5E44F535306CF8370082727A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,9 +188,6 @@
 				5E44F532306CF8370082727A /* Resources */,
 			);
 			buildRules = (
-			);
-			fileSystemSynchronizedGroups = (
-				5E44F536306CF8370082727A /* cronoOrbit */,
 			);
 			name = cronoOrbit;
 			productName = cronoOrbit;
@@ -102,6 +232,9 @@
 		5E44F532306CF8370082727A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				50474C51306E4D5F00AAE6ED /* InfoPlist.xcstrings in Resources */,
+				50474C52306E4D5F00AAE6ED /* Localizable.xcstrings in Resources */,
+				50474C56306E514E00AAE6ED /* assets.xcassets in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -110,6 +243,20 @@
 		5E44F530306CF8370082727A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				50474C43306E4D5F00AAE6ED /* DayRing.swift in Sources */,
+				50474C44306E4D5F00AAE6ED /* NewEventSheet.swift in Sources */,
+				50474C45306E4D5F00AAE6ED /* Models.swift in Sources */,
+				50474C46306E4D5F00AAE6ED /* ImportCalendarsView.swift in Sources */,
+				50474C47306E4D5F00AAE6ED /* CalendarImporter.swift in Sources */,
+				50474C48306E4D5F00AAE6ED /* cronoOrbitApp.swift in Sources */,
+				50474C49306E4D5F00AAE6ED /* RewardsView.swift in Sources */,
+				50474C4A306E4D5F00AAE6ED /* HomeView.swift in Sources */,
+				50474C4B306E4D5F00AAE6ED /* Glass.swift in Sources */,
+				50474C4C306E4D5F00AAE6ED /* RootView.swift in Sources */,
+				50474C4D306E4D5F00AAE6ED /* WeekView.swift in Sources */,
+				50474C4E306E4D5F00AAE6ED /* MonthGridView.swift in Sources */,
+				50474C4F306E4D5F00AAE6ED /* EventRow.swift in Sources */,
+				50474C50306E4D5F00AAE6ED /* EventDetailView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -246,6 +393,7 @@
 				DEVELOPMENT_TEAM = 9HDAPP52S4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "serve per importare i calendari";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -279,6 +427,7 @@
 				DEVELOPMENT_TEAM = 9HDAPP52S4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "serve per importare i calendari";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

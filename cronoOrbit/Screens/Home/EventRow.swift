@@ -1,3 +1,4 @@
+/*
 import SwiftUI
 
 struct EventRow: View {
@@ -69,3 +70,4 @@ struct EventRow: View {
         }
     }
 }
+ */

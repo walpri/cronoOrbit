@@ -1,4 +1,3 @@
-/*
 import SwiftUI
 
 // MARK: - Vista mese
@@ -83,4 +82,3 @@ struct MonthGridView: View {
         month = cal.date(byAdding: .month, value: value, to: month)!
     }
 }
- */

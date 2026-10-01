@@ -1,4 +1,3 @@
-/*
 import SwiftUI
 
 @main
@@ -9,8 +8,6 @@ struct cronoOrbitApp: App {
         WindowGroup {
             RootView()
                 .environment(store)
-                
         }
     }
 }
-*/

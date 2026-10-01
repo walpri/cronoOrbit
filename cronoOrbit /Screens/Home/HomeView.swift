@@ -1,4 +1,3 @@
-/*
 import SwiftUI
 
 // MARK: - Home
@@ -44,4 +43,3 @@ struct HomeView: View {
         }
     }
 }
- */

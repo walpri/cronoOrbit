@@ -1,4 +1,3 @@
-/*
 import EventKit
 import Observation
 
@@ -46,4 +45,3 @@ final class CalendarImporter {
         }
     }
 }
- */

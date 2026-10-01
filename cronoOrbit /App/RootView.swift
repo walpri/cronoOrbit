@@ -1,4 +1,3 @@
-/*
 import SwiftUI
 
 struct RootView: View {
@@ -10,4 +9,3 @@ struct RootView: View {
         }
     }
 }
-*/
