@@ -17,6 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "50474C5A306E5A4500AAE6ED"
                BuildableName = "cronoOrbit watch Watch App.app"
+               BlueprintName = "cronoOrbit watch Watch App"
                ReferencedContainer = "container:cronoOrbit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

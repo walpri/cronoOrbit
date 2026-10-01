@@ -1,54 +1,163 @@
 import SwiftUI
-
-#if os(iOS) // solo iPhone
-
-// MARK: - Premi
+#if os(iOS) 
 
 struct RewardsView: View {
-    @Environment(EventStore.self) private var store
-
+    
+    // Layout a due colonne per la griglia dei badge
+    let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+    
     var body: some View {
-        let done = store.events.filter { $0.end < .now }.count
-        let sport = store.events.filter { $0.category == .health }.count
-        let focus = store.events.filter { $0.category == .focus }.count
-        // Regole di esempio: sostituiscile con la tua logica
-        let medals: [(String, String, Color, Bool)] = [
-            ("Studio", "books.vertical.fill", .gray, done >= 2),
-            ("Sport", "dumbbell.fill", .yellow, sport >= 1),
-            ("Deep focus", "scope", .orange, focus >= 2)
-        ]
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Il prossimo premio").font(.headline)
-                        Text("Completa altri impegni Focus: il prossimo traguardo ti aspetta.")
-                            .font(.subheadline).foregroundStyle(.secondary)
-                    }
-                    .padding(16).frame(maxWidth: .infinity, alignment: .leading).glass(26)
-
-                    Text("I tuoi obiettivi").font(.headline).padding(.top, 8)
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                        ForEach(medals, id: \.0) { m in
-                            VStack(spacing: 10) {
-                                Text(LocalizedStringKey(m.0)).textCase(.uppercase).font(.subheadline.weight(.bold))
-                                Image(systemName: m.1).font(.system(size: 30)).foregroundStyle(.white)
-                                    .frame(width: 74, height: 74)
-                                    .background(RadialGradient(colors: [.white, m.2], center: .topLeading, startRadius: 2, endRadius: 70), in: Circle())
-                                    .shadow(color: .black.opacity(0.25), radius: 8, y: 6)
-                                    .saturation(m.3 ? 1 : 0).opacity(m.3 ? 1 : 0.6)
-                                Text(LocalizedStringKey(m.3 ? "Obiettivo raggiunto" : "Da conquistare")).font(.footnote)
-                            }
-                            .padding(16).frame(maxWidth: .infinity).glass(26)
+        ZStack {
+            // Sfondo chiaro con una sfumatura molto leggera (simile allo screenshot)
+          /*  LinearGradient(
+                gradient: Gradient(colors: [Color.blue.opacity(0.05), Color.orange.opacity(0.05)]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )*/
+           
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 24) {
+                    
+                    // Titolo
+                    Text("Awards")
+                        .font(.system(size: 34, weight: .bold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                        .padding(.top, 10)
+                    
+                    // Card Principale: To be won
+                    HStack(spacing: 12) {
+                    
+                        Image("badgeOroStudy")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 70, height: 70)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("To be won")
+                                .font(.system(size: 18, weight: .bold))
+                                
+                            
+                            Text("\"The next milestone\nis just waiting for your energy\"")
+                                .font(.system(size: 10))
+                                .foregroundColor(.gray)
+                                .italic()
+                                .fixedSize(horizontal: true, vertical: false)
                         }
+                        
+                        Spacer()
+                        
+                        HStack(spacing: -30){
+                            
+                            // Immagine dei badge disattivati/legend
+                            Image("badge_studyLegend") // Sostituisci con l'immagine di gruppo corretta se necessario
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 50)
+                                .grayscale(1.0)
+                                .fixedSize(horizontal: true, vertical: false)
+                              
+                            Image("arancioneSport")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 50)
+                                .grayscale(1.0)
+                                .fixedSize(horizontal: true, vertical: false)
+                              
+                            Image("FOCUS")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 50)
+                                .grayscale(1.0)
+                                .fixedSize(horizontal: true, vertical: false)
+                        }
+                       
                     }
+                   // .glassEffect()
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(24)
+                    .shadow(color: Color.black.opacity(0.08), radius: 15, x: 0, y: 8)
+                    .padding(.horizontal)
+                    
+                    
+                    // Griglia dei Premi (Study, Sport, Deep Focus)
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        
+                        // Card Study
+                        RewardCardView(
+                            category: "STUDY",
+                            imageName: "BadgeArgetoStudy", // Asset Argento
+                            title: "Obiettivo Study"
+                        )
+                        
+                        // Card Sport
+                        RewardCardView(
+                            category: "SPORT",
+                            imageName: "badgeSportGold", // Asset Oro
+                            title: "Obiettivo Sport"
+                        )
+                        
+                        // Card Deep Focus
+                        RewardCardView(
+                            category: "DEEP FOCUS",
+                            imageName: "focusArancione", // Asset Arancione/Bronzo
+                            title: "Obiettivo Deep\nFocus"
+                        )
+                    }
+                    .padding(.horizontal)
+                    
+                    // Spazio extra in basso per non coprire le card con la TabBar custom
+                    Spacer().frame(height: 100)
                 }
-                .padding()
-            }
-            .background(AppBackground())
-            .hideTopBarBand()
-            .navigationTitle("Premi")
+            } .background(AppBackground())
+              
         }
     }
 }
+
+// COMPONENTE RIUTILIZZABILE PER LE CARD DEI PREMI
+struct RewardCardView: View {
+    var category: String
+    var imageName: String
+    var title: String
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            // Categoria in alto a sinistra
+            Text(category)
+                .font(.system(size: 15, weight: .bold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            // Immagine del Badge
+            Image(imageName)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 85)
+            
+            // Testo in basso
+            Text(title)
+                .font(.system(size: 14, weight: .regular))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+        .cornerRadius(24)
+        .shadow(color: Color.black.opacity(0.08), radius: 15, x: 0, y: 8)
+    }
+}
+
+// Anteprima per Xcode
+struct RewardsView_Previews: PreviewProvider {
+    static var previews: some View {
+        RewardsView()
+    }
+}
+
 #endif
