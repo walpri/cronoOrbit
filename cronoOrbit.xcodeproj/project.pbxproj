@@ -248,7 +248,7 @@
 			path = Watch;
 			sourceTree = "<group>";
 		};
-		50474D19306E692700AAE6ED /* cronoOrbit 5 */ = {
+		50474D19306E692700AAE6ED /* cronoOrbit */ = {
 			isa = PBXGroup;
 			children = (
 				50474CFD306E692700AAE6ED /* App */,
@@ -260,13 +260,13 @@
 				50474D18306E692700AAE6ED /* Localizable.xcstrings */,
 				5E713988306E6C190003BFC3 /* Assets.xcassets */,
 			);
-			path = "cronoOrbit 5";
+			path = cronoOrbit;
 			sourceTree = "<group>";
 		};
 		5E44F52B306CF8370082727A = {
 			isa = PBXGroup;
 			children = (
-				50474D19306E692700AAE6ED /* cronoOrbit 5 */,
+				50474D19306E692700AAE6ED /* cronoOrbit */,
 				5E44F535306CF8370082727A /* Products */,
 			);
 			sourceTree = "<group>";
