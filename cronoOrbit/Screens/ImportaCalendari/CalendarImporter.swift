@@ -1,6 +1,8 @@
 import EventKit
 import Observation
 
+#if os(iOS) // solo iPhone
+
 /// Legge i calendari del dispositivo (iCloud, Google, Outlook… se aggiunti in Impostazioni > Calendario).
 @Observable
 final class CalendarImporter {
@@ -45,3 +47,4 @@ final class CalendarImporter {
         }
     }
 }
+#endif

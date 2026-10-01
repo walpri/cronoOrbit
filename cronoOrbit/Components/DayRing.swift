@@ -62,11 +62,11 @@ struct DayRing: View {
         let next = events.first { $0.startMinutes > now }
         VStack(spacing: 4) {
             if let e = current {
-                line(e.title, e.end.timeIntervalSince(date).hm, "Fino alle " + e.end.formatted(date: .omitted, time: .shortened))
+                line(e.title, e.end.timeIntervalSince(date).hm, String(localized: "Fino alle \(e.end.formatted(date: .omitted, time: .shortened))"))
             } else if let e = next {
-                line(e.title, e.start.timeIntervalSince(date).hm, "Oggi alle " + e.start.formatted(date: .omitted, time: .shortened))
+                line(e.title, e.start.timeIntervalSince(date).hm, String(localized: "Oggi alle \(e.start.formatted(date: .omitted, time: .shortened))"))
             } else {
-                line("", "Libero", "Nessun altro impegno")
+                line("", String(localized: "Libero"), String(localized: "Nessun altro impegno"))
             }
         }
         .padding(.horizontal, 40)

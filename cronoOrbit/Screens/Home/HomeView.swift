@@ -1,5 +1,7 @@
 import SwiftUI
 
+#if os(iOS) // solo iPhone
+
 // MARK: - Home
 
 struct HomeView: View {
@@ -43,3 +45,4 @@ struct HomeView: View {
         }
     }
 }
+#endif

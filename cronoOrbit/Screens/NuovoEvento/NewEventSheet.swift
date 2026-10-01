@@ -1,5 +1,7 @@
 import SwiftUI
 
+#if os(iOS) // solo iPhone
+
 // MARK: - Nuovo evento
 
 struct NewEventSheet: View {
@@ -26,7 +28,7 @@ struct NewEventSheet: View {
                 Section("Luogo") { TextField("Posizione", text: $place) }
                 Section("Calendario") {
                     Picker("Categoria", selection: $category) {
-                        ForEach(EventCategory.allCases) { Text($0.rawValue).tag($0) }
+                        ForEach(EventCategory.allCases) { Text($0.name).tag($0) }
                     }
                 }
                 Section("Note") { TextEditor(text: $notes).frame(minHeight: 80) }
@@ -57,3 +59,4 @@ struct NewEventSheet: View {
         dismiss()
     }
 }
+#endif
