@@ -1,5 +1,7 @@
 import SwiftUI
 
+#if os(iOS) // solo iPhone
+
 // MARK: - Vista mese
 
 struct MonthGridView: View {
@@ -82,3 +84,4 @@ struct MonthGridView: View {
         month = cal.date(byAdding: .month, value: value, to: month)!
     }
 }
+#endif

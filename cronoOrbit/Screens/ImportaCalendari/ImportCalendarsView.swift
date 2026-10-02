@@ -2,6 +2,8 @@ import SwiftUI
 import EventKit
 import UIKit
 
+#if os(iOS) // solo iPhone
+
 // MARK: - Importa calendari
 
 struct ImportCalendarsView: View {
@@ -35,7 +37,7 @@ struct ImportCalendarsView: View {
             .task { if importer.hasAccess { importer.loadCalendars() } }
         }
     }
-    
+
     // 1) Permesso non ancora chiesto
     private var intro: some View {
         VStack(spacing: 16) {
@@ -84,14 +86,14 @@ struct ImportCalendarsView: View {
                     Text("1 anno").tag(365)
                 }
                 Picker("Categoria", selection: $category) {
-                    ForEach(EventCategory.allCases) { Text($0.rawValue).tag($0) }
+                    ForEach(EventCategory.allCases) { Text($0.name).tag($0) }
                 }
             }
             Section {
                 Button("Importa \(selected.count) calendari", systemImage: "square.and.arrow.down") { runImport() }
                     .disabled(selected.isEmpty)
                 if let n = importedCount {
-                    Label(n == 0 ? "Nessun nuovo evento" : "\(n) eventi importati", systemImage: "checkmark.circle.fill")
+                    Label(n == 0 ? String(localized: "Nessun nuovo evento") : String(localized: "\(n) eventi importati"), systemImage: "checkmark.circle.fill")
                         .foregroundStyle(.green)
                 }
             }
@@ -112,3 +114,4 @@ struct ImportCalendarsView: View {
         importedCount = store.importEvents(new)
     }
 }
+#endif

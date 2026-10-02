@@ -1,11 +1,14 @@
 import SwiftUI
 
+#if os(iOS) // solo iPhone
+
 // MARK: - Settimana / Mese
 
 struct WeekView: View {
     enum Mode: String, CaseIterable, Identifiable {
         case week = "Settimana", month = "Mese"
         var id: String { rawValue }
+        var name: LocalizedStringKey { self == .week ? "Settimana" : "Mese" }
     }
 
     @Environment(EventStore.self) private var store
@@ -23,7 +26,7 @@ struct WeekView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     Picker("Vista", selection: $mode) {
-                        ForEach(Mode.allCases) { Text($0.rawValue).tag($0) }
+                        ForEach(Mode.allCases) { Text($0.name).tag($0) }
                     }
                     .pickerStyle(.segmented)
 
@@ -44,7 +47,7 @@ struct WeekView: View {
             }
             .background(AppBackground())
             .hideTopBarBand()
-            .navigationTitle(mode == .week ? "La tua settimana" : "Il tuo mese")
+            .navigationTitle(mode == .week ? LocalizedStringKey("La tua settimana") : LocalizedStringKey("Il tuo mese"))
             .navigationDestination(for: Event.ID.self) { EventDetailView(id: $0) }
         }
     }
@@ -96,7 +99,7 @@ struct WeekView: View {
                         Capsule().fill(e.category.color).frame(width: 3)
                         VStack(alignment: .leading) {
                             Text(e.title).font(.subheadline.weight(.semibold))
-                            Text(e.category.rawValue).font(.footnote).foregroundStyle(.secondary)
+                            Text(e.category.name).font(.footnote).foregroundStyle(.secondary)
                         }
                         Spacer()
                     }
@@ -124,3 +127,4 @@ struct WeekView: View {
         }
     }
 }
+#endif
