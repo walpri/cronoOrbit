@@ -1,82 +1,324 @@
 import SwiftUI
 
-// MARK: - Anello 24h
-
-/// Arco tra due orari espressi in minuti dalla mezzanotte (00:00 in alto, senso orario).
-struct ArcShape: Shape {
-    var from: Double
-    var to: Double
-    func path(in rect: CGRect) -> Path {
-        var p = Path()
-        p.addArc(center: CGPoint(x: rect.midX, y: rect.midY),
-                 radius: min(rect.width, rect.height) / 2,
-                 startAngle: .degrees(from / 1440 * 360 - 90),
-                 endAngle: .degrees(to / 1440 * 360 - 90),
-                 clockwise: false) // in SwiftUI "false" = senso orario visivo
-        return p
-    }
-}
-
-struct NowDot: View {
-    let minutes: Double
-    var body: some View {
-        GeometryReader { g in
-            let r = min(g.size.width, g.size.height) / 2
-            let a = Angle.degrees(minutes / 1440 * 360 - 90).radians
-            Circle().fill(.white)
-                .overlay(Circle().stroke(.pink, lineWidth: 3))
-                .frame(width: 14, height: 14)
-                .position(x: g.size.width / 2 + r * cos(a), y: g.size.height / 2 + r * sin(a))
-        }
-    }
-}
+// MARK: - DayRing
 
 struct DayRing: View {
-    /// Impegni del giorno, già ordinati per orario.
+    
+    /// Eventi del giorno
     let events: [Event]
-
+    
     var body: some View {
-        TimelineView(.everyMinute) { ctx in
-            let now = Event.minutes(ctx.date)
+        
+        // Aggiornamento molto frequente per rendere
+        // il movimento del ring fluido.
+        TimelineView(
+            .animation(minimumInterval: 1.0 / 30.0)
+        ) { context in
+            
+            let now = context.date
+            
+            // Evento attualmente in corso
+            let currentEvent = events.first {
+                $0.start <= now && now < $0.end
+            }
+            
+            // Primo evento che deve ancora iniziare
+            let nextEvent = events.first {
+                $0.start > now
+            }
+            
             ZStack {
-                Circle().stroke(.primary.opacity(0.15), lineWidth: 34)
-                ForEach(events) { e in
-                    ArcShape(from: e.startMinutes, to: max(e.endMinutes, e.startMinutes + 30))
-                        .stroke(LinearGradient(colors: [.cyan, .blue], startPoint: .topLeading, endPoint: .bottomTrailing),
-                                style: StrokeStyle(lineWidth: 30, lineCap: .round))
-                        .shadow(color: .blue.opacity(0.45), radius: 8)
+                
+                // =====================================================
+                // ANELLO SEMI-TRASPARENTE FISSO
+                // =====================================================
+                
+                Circle()
+                    .stroke(
+                        Color.white.opacity(0.15),
+                        lineWidth: 34
+                    )
+                
+                
+                // =====================================================
+                // ANELLO BLU PROGRESSIVO
+                // =====================================================
+                
+                if let event = currentEvent {
+                    
+                    // Durata totale dell'evento
+                    let totalDuration =
+                        event.end.timeIntervalSince(event.start)
+                    
+                    // Tempo trascorso dall'inizio
+                    let elapsed =
+                        now.timeIntervalSince(event.start)
+                    
+                    // Percentuale completata
+                    let progress = min(
+                        max(elapsed / totalDuration, 0),
+                        1
+                    )
+                    
+                    // =================================================
+                    // IL BLU PARTE DALL'INIZIO DELL'EVENTO
+                    // E PERCORRE PROGRESSIVAMENTE TUTTO IL RING
+                    // =================================================
+                    
+                    Circle()
+                        .trim(
+                            from: 0,
+                            to: progress
+                        )
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    .cyan,
+                                    .blue
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            style: StrokeStyle(
+                                lineWidth: 30,
+                                lineCap: .round,
+                                lineJoin: .round
+                            )
+                        )
+                        .rotationEffect(
+                            .degrees(
+                                event.startMinutes / 4 - 90
+                            )
+                        )
+                        .shadow(
+                            color: .blue.opacity(0.45),
+                            radius: 8
+                        )
                 }
-                NowDot(minutes: now)
-                summary(now: now, date: ctx.date)
+                
+                
+                // =====================================================
+                // TESTO CENTRALE
+                // =====================================================
+                
+                centerContent(
+                    now: now,
+                    currentEvent: currentEvent,
+                    nextEvent: nextEvent
+                )
             }
             .padding(24)
             .aspectRatio(1, contentMode: .fit)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Impegni di oggi su un anello di 24 ore")
+        .accessibilityLabel(
+            "Impegni di oggi su un anello di 24 ore"
+        )
     }
-
+    
+    
+    // MARK: - Contenuto centrale
+    
     @ViewBuilder
-    private func summary(now: Double, date: Date) -> some View {
-        let current = events.first { $0.startMinutes <= now && now < $0.endMinutes }
-        let next = events.first { $0.startMinutes > now }
-        VStack(spacing: 4) {
-            if let e = current {
-                line(e.title, e.end.timeIntervalSince(date).hm, String(localized: "Fino alle \(e.end.formatted(date: .omitted, time: .shortened))"))
-            } else if let e = next {
-                line(e.title, e.start.timeIntervalSince(date).hm, String(localized: "Oggi alle \(e.start.formatted(date: .omitted, time: .shortened))"))
-            } else {
-                line("", String(localized: "Libero"), String(localized: "Nessun altro impegno"))
+    private func centerContent(
+        now: Date,
+        currentEvent: Event?,
+        nextEvent: Event?
+    ) -> some View {
+        
+        // =========================================================
+        // EVENTO IN CORSO
+        // =========================================================
+        
+        if let event = currentEvent {
+            
+            let remaining =
+                max(
+                    0,
+                    event.end.timeIntervalSince(now)
+                )
+            
+            VStack(spacing: 5) {
+                
+                Text(event.title)
+                    .font(.caption)
+                    .foregroundStyle(.black)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                
+                Text(formatCountdown(remaining))
+                    .font(
+                        .system(
+                            size: 38,
+                            weight: .bold,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(.black)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                
+                Text(
+                    "Fino alle " +
+                    event.end.formatted(
+                        date: .omitted,
+                        time: .shortened
+                    )
+                )
+                .font(
+                    .subheadline.weight(.semibold)
+                )
+                .foregroundStyle(.black)
+            }
+            .padding(.horizontal, 40)
+            
+            
+        // =========================================================
+        // NESSUN EVENTO IN CORSO → PROSSIMO EVENTO
+        // =========================================================
+        
+        } else if let event = nextEvent {
+            
+            VStack(spacing: 5) {
+                
+                Text("Prossimo evento")
+                    .font(.caption)
+                    .foregroundStyle(.black)
+                
+                Text(event.title)
+                    .font(
+                        .system(
+                            size: 26,
+                            weight: .bold,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(.black)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                
+                Text(
+                    nextEventDateText(
+                        event,
+                        now: now
+                    )
+                )
+                .font(
+                    .subheadline.weight(.semibold)
+                )
+                .foregroundStyle(.black)
+            }
+            .padding(.horizontal, 40)
+            
+            
+        // =========================================================
+        // NESSUN ALTRO EVENTO
+        // =========================================================
+        
+        } else {
+            
+            VStack(spacing: 5) {
+                
+                Text("Tempo libero")
+                    .font(
+                        .system(
+                            size: 26,
+                            weight: .bold,
+                            design: .rounded
+                        )
+                    )
+                    .foregroundStyle(.black)
+                
+                Text("Nessun altro impegno")
+                    .font(.subheadline)
+                    .foregroundStyle(.black.opacity(0.65))
             }
         }
-        .padding(.horizontal, 40)
     }
-
-    private func line(_ top: String, _ big: String, _ bottom: String) -> some View {
-        VStack(spacing: 4) {
-            Text(top).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-            Text(big).font(.system(size: 38, weight: .bold, design: .rounded)).minimumScaleFactor(0.6).lineLimit(1)
-            Text(bottom).font(.subheadline.weight(.semibold)).foregroundStyle(.primary.opacity(0.85))
+    
+    
+    // MARK: - Countdown
+    
+    private func formatCountdown(
+        _ seconds: TimeInterval
+    ) -> String {
+        
+        let totalSeconds =
+            max(
+                0,
+                Int(seconds.rounded(.down))
+            )
+        
+        let hours =
+            totalSeconds / 3600
+        
+        let minutes =
+            (totalSeconds % 3600) / 60
+        
+        let secs =
+            totalSeconds % 60
+        
+        if hours > 0 {
+            
+            return "\(hours)h " +
+            String(
+                format: "%02d",
+                minutes
+            ) +
+            "m"
+            
+        } else {
+            
+            return "\(minutes)m " +
+            String(
+                format: "%02d",
+                secs
+            ) +
+            "s"
+        }
+    }
+    
+    
+    // MARK: - Prossimo evento
+    
+    private func nextEventDateText(
+        _ event: Event,
+        now: Date
+    ) -> String {
+        
+        let calendar =
+            Calendar.current
+        
+        // Se è oggi → solo orario
+        if calendar.isDate(
+            event.start,
+            inSameDayAs: now
+        ) {
+            
+            return event.start.formatted(
+                date: .omitted,
+                time: .shortened
+            )
+            
+        } else {
+            
+            // Se è un altro giorno →
+            // data + orario
+            
+            return event.start.formatted(
+                .dateTime
+                    .weekday(.wide)
+                    .day()
+                    .month(.wide)
+            )
+            +
+            " · "
+            +
+            event.start.formatted(
+                date: .omitted,
+                time: .shortened
+            )
         }
     }
 }
