@@ -24,6 +24,7 @@ struct ImportCalendarsView: View {
                 default:             denied
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)   // ← nuova riga
             .scrollContentBackground(.hidden)
             .background(AppBackground())
             .navigationTitle("Importa calendari")
