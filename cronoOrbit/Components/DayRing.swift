@@ -35,7 +35,7 @@ struct DayRing: View {
                 
                 Circle()
                     .stroke(
-                        Color.white.opacity(0.15),
+                        Color.gray.opacity(0.20),
                         lineWidth: 34
                     )
                 
@@ -85,11 +85,7 @@ struct DayRing: View {
                                 lineJoin: .round
                             )
                         )
-                        .rotationEffect(
-                            .degrees(
-                                event.startMinutes / 4 - 90
-                            )
-                        )
+                        .rotationEffect(.degrees(-90))
                         .shadow(
                             color: .blue.opacity(0.45),
                             radius: 8
