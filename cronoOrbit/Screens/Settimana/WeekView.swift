@@ -113,17 +113,38 @@ struct WeekView: View {
     private var overview: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Panoramica").font(.headline).padding(.top, 6)
-            HStack(spacing: 6) {
+
+            HStack(alignment: .top, spacing: 6) {
                 ForEach(days, id: \.self) { d in
-                    VStack(spacing: 6) {
-                        Capsule()
-                            .fill(store.events(on: d).first?.category.color ?? Color.primary.opacity(0.15))
-                            .frame(height: 6)
-                        Text(d.formatted(.dateTime.weekday(.narrow))).font(.caption2).foregroundStyle(.secondary)
+                    let dayEvents = store.events(on: d)
+                        .sorted { $0.start < $1.start }
+
+                    VStack(spacing: 4) {
+
+                        if dayEvents.isEmpty {
+                            // Giorno libero: capsula neutra
+                            Capsule()
+                                .fill(Color.primary.opacity(0.15))
+                                .frame(height: 6)
+                        } else {
+                            // Una capsula per ogni evento
+                            ForEach(dayEvents) { event in
+                                Capsule()
+                                    .fill(event.category.color)
+                                    .frame(height: 6)
+                            }
+                        }
+
+                        Text(d.formatted(.dateTime.weekday(.narrow)))
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 2)
                     }
+                    .frame(maxWidth: .infinity, alignment: .top)
                 }
             }
-            .padding(16).glass(26)
+            .padding(16)
+            .glass(26)
         }
     }
 }
