@@ -12,6 +12,8 @@ struct cronoOrbitApp: App {
                 .environment(store)
                 .task {
                     PhoneConnectivity.shared.start()
+                    // Aspetta mezzo secondo per assicurare l'attivazione della sessione WCSession nel simulatore
+                    try? await Task.sleep(nanoseconds: 500_000_000)
                     PhoneConnectivity.shared.send(store.events)
                 }
                 .onChange(of: store.events) { _, new in

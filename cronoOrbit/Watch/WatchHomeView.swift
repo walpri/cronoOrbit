@@ -1,105 +1,158 @@
 import SwiftUI
 
-#if os(watchOS) // solo Apple Watch
-
-// MARK: - Home Apple Watch (pensata per Series 11 da 46 mm, ma si adatta a tutti i formati)
+#if os(watchOS)
 
 struct WatchHomeView: View {
-    @Environment(WatchStore.self) private var store
+    @Environment(WatchEventStore.self) private var store
 
     var body: some View {
-        let today = store.events(on: .now)
         NavigationStack {
-            TabView {
-                WatchRing(events: today)
-                WatchEventList(events: today)
-            }
-            .tabViewStyle(.verticalPage)
-            .containerBackground(Color(red: 0.09, green: 0.06, blue: 0.23).gradient, for: .tabView)
-        }
-    }
-}
+            let today = store.todayEvents()
+            
+            ScrollView {
+                VStack(spacing: 12) {
+                    WatchDayRing(events: today)
+                        .frame(width: 150, height: 150)
+                        .padding(.vertical, 4)
 
-// MARK: Anello 24h
+                    if today.isEmpty {
+                        ContentUnavailableView(
+                            "Nessun evento",
+                            systemImage: "calendar.badge.checkmark",
+                            description: Text("Aggiungi o importa eventi dall'iPhone")
+                        )
+                        .padding(.top, 8)
+                    } else {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Oggi")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
 
-struct WatchRing: View {
-    let events: [Event]
-
-    var body: some View {
-        TimelineView(.everyMinute) { ctx in
-            let now = Event.minutes(ctx.date)
-            ZStack {
-                Circle().stroke(.primary.opacity(0.15), lineWidth: 14)
-                ForEach(events) { e in
-                    ArcShape(from: e.startMinutes, to: max(e.endMinutes, e.startMinutes + 30))
-                        .stroke(LinearGradient(colors: [.cyan, .blue], startPoint: .topLeading, endPoint: .bottomTrailing),
-                                style: StrokeStyle(lineWidth: 12, lineCap: .round))
-                }
-                NowDot(minutes: now)
-                center(now: now, date: ctx.date)
-            }
-            .padding(12)
-            .aspectRatio(1, contentMode: .fit)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Impegni di oggi su un anello di 24 ore")
-    }
-
-    @ViewBuilder
-    private func center(now: Double, date: Date) -> some View {
-        let current = events.first { $0.startMinutes <= now && now < $0.endMinutes }
-        let next = events.first { $0.startMinutes > now }
-        VStack(spacing: 2) {
-            if let e = current {
-                text(e.title, e.end.timeIntervalSince(date).hm,
-                     String(localized: "Fino alle \(e.end.formatted(date: .omitted, time: .shortened))"))
-            } else if let e = next {
-                text(e.title, e.start.timeIntervalSince(date).hm,
-                     String(localized: "Oggi alle \(e.start.formatted(date: .omitted, time: .shortened))"))
-            } else {
-                text("", String(localized: "Libero"), String(localized: "Nessun altro impegno"))
-            }
-        }
-        .padding(.horizontal, 28)
-    }
-
-    private func text(_ top: String, _ big: String, _ bottom: String) -> some View {
-        VStack(spacing: 2) {
-            Text(top).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
-            Text(big).font(.system(size: 26, weight: .bold, design: .rounded)).minimumScaleFactor(0.6).lineLimit(1)
-            Text(bottom).font(.caption2.weight(.semibold)).foregroundStyle(.primary.opacity(0.85)).lineLimit(1).minimumScaleFactor(0.7)
-        }
-    }
-}
-
-// MARK: Elenco impegni
-
-struct WatchEventList: View {
-    let events: [Event]
-
-    var body: some View {
-        List {
-            if events.isEmpty {
-                Text("Giornata libera.").foregroundStyle(.secondary)
-            }
-            ForEach(events) { e in
-                HStack(spacing: 8) {
-                    Circle().fill(e.category.color).frame(width: 8, height: 8)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(e.title).font(.headline).lineLimit(2)
-                        Text("\(e.start.formatted(date: .omitted, time: .shortened)) – \(e.end.formatted(date: .omitted, time: .shortened))")
-                            .font(.caption2).foregroundStyle(.secondary)
+                            ForEach(today) { event in
+                                NavigationLink(value: event.id) {
+                                    WatchEventRow(event: event)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
                     }
                 }
+                .padding(.horizontal, 8)
+            }
+            .navigationTitle("CronoOrbit")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: UUID.self) { eventID in
+                if let event = store.events.first(where: { $0.id == eventID }) {
+                    WatchEventDetailView(event: event)
+                }
             }
         }
-        .navigationTitle("Impegni di oggi")
     }
 }
 
-#Preview {
-    let s = WatchStore()
-    s.events = EventStore.sample()
-    return WatchHomeView().environment(s)
+struct WatchEventRow: View {
+    let event: Event
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Capsule()
+                .fill(event.category.color)
+                .frame(width: 4, height: 32)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(event.title)
+                    .font(.system(.body, design: .rounded))
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+
+                Text("\(event.start.formatted(date: .omitted, time: .shortened)) - \(event.end.formatted(date: .omitted, time: .shortened))")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(10)
+        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
 }
+
+struct WatchDayRing: View {
+    let events: [Event]
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
+            let now = context.date
+            let currentEvent = events.first { $0.start <= now && now < $0.end }
+            let nextEvent = events.first { $0.start > now }
+
+            ZStack {
+                Circle()
+                    .stroke(Color.gray.opacity(0.25), lineWidth: 14)
+
+                if let event = currentEvent {
+                    let totalDuration = event.end.timeIntervalSince(event.start)
+                    let elapsed = now.timeIntervalSince(event.start)
+                    let progress = min(max(elapsed / totalDuration, 0), 1)
+
+                    Circle()
+                        .trim(from: 0, to: progress)
+                        .stroke(
+                            LinearGradient(colors: [.cyan, .blue], startPoint: .topLeading, endPoint: .bottomTrailing),
+                            style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(-90))
+                }
+
+                VStack(spacing: 2) {
+                    if let event = currentEvent {
+                        let remaining = max(0, event.end.timeIntervalSince(now))
+                        Text(event.title)
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+
+                        Text(formatCountdown(remaining))
+                            .font(.system(.title3, design: .rounded, weight: .bold))
+                            .minimumScaleFactor(0.7)
+
+                        Text("fino alle \(event.end.formatted(date: .omitted, time: .shortened))")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.tertiary)
+                    } else if let event = nextEvent {
+                        Text("Prossimo")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+
+                        Text(event.title)
+                            .font(.caption.weight(.semibold))
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+
+                        Text(event.start.formatted(date: .omitted, time: .shortened))
+                            .font(.caption2)
+                            .foregroundStyle(.cyan)
+                    } else {
+                        Text("Tempo libero")
+                            .font(.caption.weight(.bold))
+                        Text("Nessun impegno")
+                            .font(.system(size: 10))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.horizontal, 12)
+            }
+        }
+    }
+
+    private func formatCountdown(_ seconds: TimeInterval) -> String {
+        let total = max(0, Int(seconds.rounded(.down)))
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        let s = total % 60
+        return h > 0 ? "\(h)h \(m)m" : String(format: "%02d:%02d", m, s)
+    }
+}
+
 #endif

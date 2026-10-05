@@ -109,9 +109,12 @@ struct ImportCalendarsView: View {
     }
 
     private func runImport() {
-        let chosen = importer.calendars.filter { selected.contains($0.calendarIdentifier) }
-        let new = importer.events(from: chosen, days: days, category: category)
-        importedCount = store.importEvents(new)
-    }
+            let chosen = importer.calendars.filter { selected.contains($0.calendarIdentifier) }
+            let new = importer.events(from: chosen, days: days, category: category)
+            importedCount = store.importEvents(new)
+            
+            // Sincronizza subito i nuovi eventi con l'Apple Watch
+            PhoneConnectivity.shared.send(store.events)
+        }
 }
 #endif
