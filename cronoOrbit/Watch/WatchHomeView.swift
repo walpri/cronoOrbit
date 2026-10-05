@@ -1,13 +1,20 @@
 import SwiftUI
+import WatchConnectivity
 
 #if os(watchOS)
 
 struct WatchHomeView: View {
     @Environment(WatchEventStore.self) private var store
+    
+    // Stati per popup e festeggiamenti su Watch
+    @State private var eventToConfirm: Event?
+    @State private var showCelebration = false
+    @State private var currentQuote = ""
 
     var body: some View {
         NavigationStack {
-            let today = store.todayEvents()
+            // Filtriamo per considerare solo gli eventi NON completati
+            let today = store.todayEvents().filter { !$0.isCompleted }
             
             ScrollView {
                 VStack(spacing: 12) {
@@ -17,9 +24,9 @@ struct WatchHomeView: View {
 
                     if today.isEmpty {
                         ContentUnavailableView(
-                            "Nessun evento",
-                            systemImage: "calendar.badge.checkmark",
-                            description: Text("Aggiungi o importa eventi dall'iPhone")
+                            "Tutto fatto!",
+                            systemImage: "checkmark.circle.fill",
+                            description: Text("Nessun altro impegno previsto")
                         )
                         .padding(.top, 8)
                     } else {
@@ -47,6 +54,92 @@ struct WatchHomeView: View {
                     WatchEventDetailView(event: event)
                 }
             }
+            // --- CHIUSURA POPUP SE RISPONDI DALL'IPHONE ---
+            .onChange(of: store.events) { _, newEvents in
+                if let current = eventToConfirm,
+                   let updated = newEvents.first(where: { $0.id == current.id }),
+                   updated.isCompleted {
+                    eventToConfirm = nil
+                }
+            }
+            // --- CONTROLLO EVENTI TERMINATI SU WATCH ---
+            .task {
+                while !Task.isCancelled {
+                    checkCompletedEvents()
+                    try? await Task.sleep(nanoseconds: 5_000_000_000) // ogni 5 secondi
+                }
+            }
+            // POPUP DI CONFERMA SULL'APPLE WATCH
+            .sheet(item: $eventToConfirm) { event in
+                VStack(spacing: 10) {
+                    Text("Hai finito?")
+                        .font(.headline)
+                    Text(event.title)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+
+                    HStack {
+                        Button("❌ No") {
+                            confirmCompletion(for: event, completed: false)
+                        }
+                        .buttonStyle(.bordered)
+
+                        Button("✅ Sì") {
+                            confirmCompletion(for: event, completed: true)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.green)
+                    }
+                }
+                .padding()
+            }
+            // SCHERMATA MOTIVAZIONALE APPLE WATCH
+            .sheet(isPresented: $showCelebration) {
+                VStack(spacing: 8) {
+                    Text("🎉 🎉 🎉")
+                        .font(.title)
+                    Text(currentQuote)
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+
+                    Button("OK") {
+                        showCelebration = false
+                    }
+                    .padding(.top, 4)
+                }
+                .padding()
+            }
+        }
+    }
+
+    private func checkCompletedEvents() {
+        let now = Date.now
+        // Limita il controllo agli eventi terminati negli ultimi 15 minuti (900 secondi)
+        let maxDelay: TimeInterval = 900
+        
+        if let ended = store.events.first(where: {
+            $0.end <= now &&
+            now.timeIntervalSince($0.end) <= maxDelay &&
+            !$0.isCompleted
+        }) {
+            if eventToConfirm == nil && !showCelebration {
+                eventToConfirm = ended
+            }
+        }
+    }
+
+    private func confirmCompletion(for event: Event, completed: Bool) {
+        if let index = store.events.firstIndex(where: { $0.id == event.id }) {
+            store.events[index].isCompleted = true
+            // Inviamo lo stato aggiornato a iPhone tramite il metodo dedicato
+            WatchConnectivity.shared.send(store.events)
+        }
+        eventToConfirm = nil
+
+        if completed {
+            currentQuote = Event.motivationalQuotes.randomElement() ?? "Ottimo lavoro!"
+            showCelebration = true
         }
     }
 }
@@ -155,4 +248,4 @@ struct WatchDayRing: View {
     }
 }
 
-#endif
+#endif // os(watchOS)

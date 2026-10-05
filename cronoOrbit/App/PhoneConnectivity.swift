@@ -1,10 +1,16 @@
 import WatchConnectivity
 import Foundation
+import Observation
 
 #if os(iOS)
 
+@Observable
 final class PhoneConnectivity: NSObject, WCSessionDelegate {
     static let shared = PhoneConnectivity()
+    
+    // Riferimento allo store di iPhone per aggiornare la lista quando l'Apple Watch risponde al popup
+    weak var store: EventStore?
+    
     private var pendingEvents: [Event] = []
 
     func start() {
@@ -27,14 +33,37 @@ final class PhoneConnectivity: NSObject, WCSessionDelegate {
 
         let session = WCSession.default
         if session.activationState == .activated {
-            // 1. Aggiorna il contesto generale
             try? session.updateApplicationContext(payload)
-            // 2. Metti in coda il trasferimento info (garantito nel simulatore)
             session.transferUserInfo(payload)
-            // 3. Se raggiungibile, invia subito un messaggio
             if session.isReachable {
                 session.sendMessage(payload, replyHandler: nil, errorHandler: nil)
             }
+        }
+    }
+
+    // MARK: - Ricezione dati da Apple Watch
+    
+    // Riceve quando l'app è aperta sul Watch
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        handleIncomingData(message)
+    }
+
+    // Riceve se il pacchetto arriva tramite context o background
+    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
+        handleIncomingData(applicationContext)
+    }
+
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        handleIncomingData(userInfo)
+    }
+
+    private func handleIncomingData(_ data: [String: Any]) {
+        guard let rawData = data["events"] as? Data,
+              let updatedEvents = try? JSONDecoder().decode([Event].self, from: rawData) else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            // Aggiorna lo store locale dell'iPhone con gli eventi ricevuti dal Watch
+            self?.store?.events = updatedEvents
         }
     }
 
@@ -46,6 +75,7 @@ final class PhoneConnectivity: NSObject, WCSessionDelegate {
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {}
+    
     func sessionDidDeactivate(_ session: WCSession) {
         WCSession.default.activate()
     }

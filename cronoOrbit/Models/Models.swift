@@ -4,6 +4,7 @@ import Observation
 enum EventCategory: String, CaseIterable, Identifiable, Codable {
     case focus = "Focus", health = "Salute", work = "Lavoro", social = "Sociale"
     var id: String { rawValue }
+    
     /// Nome mostrato nell'interfaccia (si traduce con la lingua del sistema)
     var name: LocalizedStringKey {
         switch self {
@@ -13,6 +14,7 @@ enum EventCategory: String, CaseIterable, Identifiable, Codable {
         case .social: "Sociale"
         }
     }
+    
     var color: Color {
         switch self {
         case .focus:  Color(red: 0.56, green: 0.69, blue: 1.0)
@@ -35,6 +37,8 @@ struct Event: Identifiable, Hashable, Codable {
     var reminderMinutes = 15
     /// ID del calendario di origine (serve a evitare duplicati quando si reimporta)
     var externalID: String? = nil
+    /// Traccia se l'attività è stata confermata come completata
+    var isCompleted: Bool = false
 
     var startMinutes: Double { Event.minutes(start) }
     var endMinutes: Double { Event.minutes(end) }
@@ -44,6 +48,15 @@ struct Event: Identifiable, Hashable, Codable {
         let c = Calendar.current
         return Double(c.component(.hour, from: d) * 60 + c.component(.minute, from: d))
     }
+    
+    /// Frasi motivazionali casuali per i festeggiamenti
+    static let motivationalQuotes = [
+        "Ottimo lavoro! Un altro obiettivo completato! 🔥",
+        "Fantastico! La costanza è la chiave del successo. 👏",
+        "Bravissimo/a! Continua così verso le tue mete! 🚀",
+        "Obiettivo raggiunto! Prenditi un secondo per festeggiare. 🎉",
+        "Super! La tua produttività è al top oggi. 💪"
+    ]
 }
 
 extension TimeInterval {
@@ -62,6 +75,7 @@ final class EventStore {
         events.filter { Calendar.current.isDate($0.start, inSameDayAs: day) }
               .sorted { $0.start < $1.start }
     }
+    
     func add(_ e: Event) { events.append(e) }
     func delete(_ id: Event.ID) { events.removeAll { $0.id == id } }
 
@@ -74,7 +88,7 @@ final class EventStore {
         return fresh.count
     }
 
-    // Dati di esempio: sostituiscili con la tua persistenza (SwiftData, CloudKit, EventKit…)
+    // Dati di esempio
     static func sample() -> [Event] {
         let cal = Calendar.current
         let today = cal.startOfDay(for: .now)

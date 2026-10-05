@@ -11,6 +11,9 @@ struct cronoOrbitApp: App {
             RootView()
                 .environment(store)
                 .task {
+                    // 1. Colleghiamo lo store così l'iPhone può aggiornarsi quando il Watch gli risponde
+                    PhoneConnectivity.shared.store = store
+                    
                     PhoneConnectivity.shared.start()
                     // Aspetta mezzo secondo per assicurare l'attivazione della sessione WCSession nel simulatore
                     try? await Task.sleep(nanoseconds: 500_000_000)
@@ -22,4 +25,4 @@ struct cronoOrbitApp: App {
         }
     }
 }
-#endif
+#endif // os(iOS)
