@@ -6,13 +6,20 @@ import SwiftUI
 
 struct OutcomeButtons: View {
     @Environment(EventStore.self) private var store
+    
+    @EnvironmentObject var progress: ProgressManager
+    
     let event: Event
 
     var body: some View {
         HStack(spacing: 8) {
-            Button { store.setCompletion(event.id, status: .done) } label: {
-                chip("Fatto", "checkmark.circle.fill", .green)
-            }
+            Button {
+                           store.setCompletion(event.id, status: .done)
+                          
+                           progress.completeEvent(category: event.category.title) 
+                       } label: {
+                           chip("Fatto", "checkmark.circle.fill", .green)
+                       }
 
             Menu {
                 // quanta parte dell'impegno hai svolto

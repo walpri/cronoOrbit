@@ -84,6 +84,8 @@
 		5E9F4E533075084C004DF84B /* MedalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E513075084C004DF84B /* MedalDetailView.swift */; };
 		5E9F4E5530750874004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */; };
 		5E9F4E5630750874004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */; };
+		5E9F4E5B3075132F004DF84B /* ProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5A3075132F004DF84B /* ProgressManager.swift */; };
+		5E9F4E5C3075132F004DF84B /* ProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5A3075132F004DF84B /* ProgressManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +174,7 @@
 		5E44F534306CF8370082727A /* cronoOrbit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cronoOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E9F4E513075084C004DF84B /* MedalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalDetailView.swift; sourceTree = "<group>"; };
 		5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsCategoryDetailView.swift; sourceTree = "<group>"; };
+		5E9F4E5A3075132F004DF84B /* ProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -285,6 +288,7 @@
 				50017D543075058D00EA13DB /* RewardsView.swift */,
 				5E9F4E513075084C004DF84B /* MedalDetailView.swift */,
 				5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */,
+				5E9F4E5A3075132F004DF84B /* ProgressManager.swift */,
 			);
 			path = Premi;
 			sourceTree = "<group>";
@@ -549,6 +553,7 @@
 				5E9F4E5530750874004DF84B /* RewardsCategoryDetailView.swift in Sources */,
 				50017D793075058D00EA13DB /* RewardsView.swift in Sources */,
 				50017D7A3075058D00EA13DB /* DayRing.swift in Sources */,
+				5E9F4E5B3075132F004DF84B /* ProgressManager.swift in Sources */,
 				50017D7B3075058D00EA13DB /* LocalParser.swift in Sources */,
 				50017D7C3075058D00EA13DB /* VerificationCard.swift in Sources */,
 				5E9F4E523075084C004DF84B /* MedalDetailView.swift in Sources */,
@@ -599,6 +604,7 @@
 				5E9F4E5630750874004DF84B /* RewardsCategoryDetailView.swift in Sources */,
 				50017DA03075058D00EA13DB /* RewardsView.swift in Sources */,
 				50017DA13075058D00EA13DB /* DayRing.swift in Sources */,
+				5E9F4E5C3075132F004DF84B /* ProgressManager.swift in Sources */,
 				50017DA23075058D00EA13DB /* LocalParser.swift in Sources */,
 				50017DA33075058D00EA13DB /* VerificationCard.swift in Sources */,
 				5E9F4E533075084C004DF84B /* MedalDetailView.swift in Sources */,

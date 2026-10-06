@@ -6,6 +6,7 @@ import SwiftUI
 
 struct VerificationCard: View {
     @Environment(EventStore.self) private var store
+    @EnvironmentObject var progress: ProgressManager
     let event: Event
 
     var body: some View {
@@ -35,7 +36,9 @@ struct VerificationCard: View {
                 }
             }
             Spacer()
-            Button { store.stopTracking(event.id) } label: {
+            Button { store.stopTracking(event.id)
+                progress.completeEvent(category: event.category.title)
+            } label: {
                 Label("Termina", systemImage: "stop.fill")
                     .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 14).padding(.vertical, 10)

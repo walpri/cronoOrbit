@@ -11,7 +11,6 @@ struct EventRow: View {
     
     @State private var showEdit = false
 
-    /// Esito della verifica: spunta, mezzo cerchio, croce o punto rosso se è in corso
     @ViewBuilder
     private var statusIcon: some View {
         if event.trackingStart != nil {

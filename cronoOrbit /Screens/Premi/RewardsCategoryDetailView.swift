@@ -1,51 +1,30 @@
-//
-//  RewardsCategoryDetailView.swift
-//  cronoOrbit
-//
-//  Created by san-26 on 06/10/2026.
-//
 import SwiftUI
 #if os(iOS)
 
 struct RewardsCategoryDetailView: View {
     
-   
+    @EnvironmentObject var progress: ProgressManager
+    
     let columns = [
         GridItem(.flexible(), alignment: .top),
         GridItem(.flexible(), alignment: .top),
         GridItem(.flexible(), alignment: .top)
     ]
- 
-    
-    // STUDY
-    @State private var bronziStudy = 0
-    @State private var argentiStudy = 0
-    @State private var arancioniStudy = 0
-    @State private var oriStudy = 0
-    @State private var platiniStudy = 0
-    
-    // FOCUS
-    @State private var bronziFocus = 0
-    @State private var argentiFocus = 0
-    @State private var arancioniFocus = 0
-    @State private var oriFocus = 0
-    @State private var platiniFocus = 0
-    
-    // SPORT
-    @State private var bronziSport = 0
-    @State private var argentiSport = 0
-    @State private var arancioniSport = 0
-    @State private var oriSport = 0
-    @State private var platiniSport = 0
-    
     
     var body: some View {
         ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [Color.blue.opacity(0.05), Color.orange.opacity(0.05)]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 40) {
                     
+
                     // --- Sezione STUDY ---
-         
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Study")
                             .font(.system(size: 34, weight: .bold))
@@ -53,43 +32,33 @@ struct RewardsCategoryDetailView: View {
                         
                         LazyVGrid(columns: columns, spacing: 24) {
                             
-                          
-                          
-                            if oriStudy > 0 && platiniStudy == 0 {
-                                BadgeItemView(imageName: "badge_studyLegend", title: "Platinum Study", isUnlocked: false, progress: 0.2) // Barra Platino
-                            } else if arancioniStudy > 0 && oriStudy == 0 {
-                                BadgeItemView(imageName: "badgeOroStudy", title: "Gold Study", isUnlocked: false, progress: 0.5) // Barra Oro
-                            } else if argentiStudy > 0 && arancioniStudy == 0 {
-                                BadgeItemView(imageName: "arancioneStudy", title: "Orange Study", isUnlocked: false, progress: 0.3) // Barra Arancione
-                            } else if bronziStudy > 0 && argentiStudy == 0 {
-                                BadgeItemView(imageName: "BadgeArgetoStudy", title: "Argento Study", isUnlocked: false, progress: 0.8) // Barra Argento
-                            } else if bronziStudy == 0 {
-                                BadgeItemView(imageName: "BadgeStudyBronzo", title: "Bronze Study", isUnlocked: false, progress: 0.6) // Barra Bronzo
+                            if progress.hasGoldStudy {
+                                BadgeItemView(imageName: "PlatinumStudy", title: "Platinum Study", isUnlocked: progress.hasPlatinumStudy, earnedCount: progress.completedStudyEvents, progress: progress.platinumStudyProgress)
                             }
                             
-                            // 2. A SEGUIRE: LE MEDAGLIE GIÀ VINTE
-                            if platiniStudy > 0 {
-                                BadgeItemView(imageName: "badge_studyLegend", title: "Platinum Study", isUnlocked: true, earnedCount: platiniStudy)
+                            // 4. L'Oro appare se l'Arancione è sbloccato
+                            if progress.hasOrangeStudy {
+                                BadgeItemView(imageName: "badgeOroStudy", title: "Gold Study", isUnlocked: progress.hasGoldStudy, earnedCount: progress.completedStudyEvents, progress: progress.goldStudyProgress)
                             }
-                            if oriStudy > 0 {
-                                BadgeItemView(imageName: "badgeOroStudy", title: "Gold Study", isUnlocked: true, earnedCount: oriStudy)
+                            
+                            // 3. L'Arancione appare se l'Argento è sbloccato
+                            if progress.hasSilverStudy {
+                                BadgeItemView(imageName: "OrangeStudy", title: "Orange Study", isUnlocked: progress.hasOrangeStudy, earnedCount: progress.completedStudyEvents, progress: progress.orangeStudyProgress)
                             }
-                            if arancioniStudy > 0 {
-                                BadgeItemView(imageName: "arancioneStudy", title: "Orange Study", isUnlocked: true, earnedCount: arancioniStudy)
+                            
+                            // 2. L'Argento appare se il Bronzo è sbloccato
+                            if progress.hasBronzeStudy {
+                                BadgeItemView(imageName: "BadgeArgetoStudy", title: "Argento Study", isUnlocked: progress.hasSilverStudy, earnedCount: progress.completedStudyEvents, progress: progress.silverStudyProgress)
                             }
-                            if argentiStudy > 0 {
-                                BadgeItemView(imageName: "BadgeArgetoStudy", title: "Argento Study", isUnlocked: true, earnedCount: argentiStudy)
-                            }
-                            if bronziStudy > 0 {
-                                BadgeItemView(imageName: "BadgeStudyBronzo", title: "Bronze Study", isUnlocked: true, earnedCount: bronziStudy)
-                            }
+                            
+                            // 1. Il Bronzo è sempre visibile, ma ora viene spinto in fondo
+                            BadgeItemView(imageName: "BadgeStudyBronzo", title: "Bronze Study", isUnlocked: progress.hasBronzeStudy, earnedCount: progress.completedStudyEvents, progress: progress.bronzeStudyProgress)
                         }
                         .padding(.horizontal)
                     }
                     
-        
+                    
                     // --- Sezione FOCUS ---
-            
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Focus")
                             .font(.system(size: 34, weight: .bold))
@@ -97,42 +66,25 @@ struct RewardsCategoryDetailView: View {
                         
                         LazyVGrid(columns: columns, spacing: 24) {
                             
-                            // 1. PRIMA LINEA: IL PROSSIMO OBIETTIVO (Grigio con barra)
-                            if oriFocus > 0 && platiniFocus == 0 {
-                                BadgeItemView(imageName: "badge_focusLegend", title: "Platinum Focus", isUnlocked: false, progress: 0.0)
-                            } else if arancioniFocus > 0 && oriFocus == 0 {
-                                BadgeItemView(imageName: "FOCUS", title: "Gold Focus", isUnlocked: false, progress: 0.0)
-                            } else if argentiFocus > 0 && arancioniFocus == 0 {
-                                BadgeItemView(imageName: "focusArancione", title: "Orange Focus", isUnlocked: false, progress: 0.0)
-                            } else if bronziFocus > 0 && argentiFocus == 0 {
-                                BadgeItemView(imageName: "badgeArgentofocus", title: "Argento Focus", isUnlocked: false, progress: 0.0)
-                            } else if bronziFocus == 0 {
-                                BadgeItemView(imageName: "badge_bronzo2focus", title: "Bronze Focus", isUnlocked: false, progress: 0.3)
+                            if progress.hasGoldFocus {
+                                BadgeItemView(imageName: "PlatinumFocus", title: "Platinum Focus", isUnlocked: progress.hasPlatinumFocus, earnedCount: progress.completedFocusEvents, progress: progress.platinumFocusProgress)
                             }
-                            
-                        //  MEDAGLIE GIÀ VINTE
-                            if platiniFocus > 0 {
-                                BadgeItemView(imageName: "badge_focusLegend", title: "Platinum Focus", isUnlocked: true, earnedCount: platiniFocus)
+                            if progress.hasOrangeFocus {
+                                BadgeItemView(imageName: "FOCUS", title: "Gold Focus", isUnlocked: progress.hasGoldFocus, earnedCount: progress.completedFocusEvents, progress: progress.goldFocusProgress)
                             }
-                            if oriFocus > 0 {
-                                BadgeItemView(imageName: "FOCUS", title: "Gold Focus", isUnlocked: true, earnedCount: oriFocus)
+                            if progress.hasSilverFocus {
+                                BadgeItemView(imageName: "focusArancione", title: "Orange Focus", isUnlocked: progress.hasOrangeFocus, earnedCount: progress.completedFocusEvents, progress: progress.orangeFocusProgress)
                             }
-                            if arancioniFocus > 0 {
-                                BadgeItemView(imageName: "focusArancione", title: "Orange Focus", isUnlocked: true, earnedCount: arancioniFocus)
+                            if progress.hasBronzeFocus {
+                                BadgeItemView(imageName: "badgeArgentofocus", title: "Argento Focus", isUnlocked: progress.hasSilverFocus, earnedCount: progress.completedFocusEvents, progress: progress.silverFocusProgress)
                             }
-                            if argentiFocus > 0 {
-                                BadgeItemView(imageName: "badgeArgentofocus", title: "Argento Focus", isUnlocked: true, earnedCount: argentiFocus)
-                            }
-                            if bronziFocus > 0 {
-                                BadgeItemView(imageName: "badge_bronzo2focus", title: "Bronze Focus", isUnlocked: true, earnedCount: bronziFocus)
-                            }
+                            BadgeItemView(imageName: "badge_bronzo2focus", title: "Bronze Focus", isUnlocked: progress.hasBronzeFocus, earnedCount: progress.completedFocusEvents, progress: progress.bronzeFocusProgress)
                         }
                         .padding(.horizontal)
                     }
                     
-
                     // --- Sezione SPORT ---
-           
+                    
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Sport")
                             .font(.system(size: 34, weight: .bold))
@@ -140,35 +92,19 @@ struct RewardsCategoryDetailView: View {
                         
                         LazyVGrid(columns: columns, spacing: 24) {
                             
-                            // 1. PRIMA LINEA: IL PROSSIMO OBIETTIVO (Grigio con barra)
-                            if oriSport > 0 && platiniSport == 0 {
-                                BadgeItemView(imageName: "badge_SportLegend 1", title: "Platinum Sport", isUnlocked: false, progress: 0.0)
-                            } else if arancioniSport > 0 && oriSport == 0 {
-                                BadgeItemView(imageName: "badgeSportGold", title: "Gold Sport", isUnlocked: false, progress: 0.0)
-                            } else if argentiSport > 0 && arancioniSport == 0 {
-                                BadgeItemView(imageName: "arancioneSport", title: "Orange Sport", isUnlocked: false, progress: 0.0)
-                            } else if bronziSport > 0 && argentiSport == 0 {
-                                BadgeItemView(imageName: "ArgentoSport", title: "Argento Sport", isUnlocked: false, progress: 0.0)
-                            } else if bronziSport == 0 {
-                                BadgeItemView(imageName: "badge_bronzo2sport", title: "Bronze Sport", isUnlocked: false, progress: 0.35)
+                            if progress.hasGoldSport {
+                                BadgeItemView(imageName: "PlatinumSport", title: "Platinum Sport", isUnlocked: progress.hasPlatinumSport, earnedCount: progress.completedSportEvents, progress: progress.platinumSportProgress)
                             }
-                            
-                     // LE MEDAGLIE GIÀ VINTE
-                            if platiniSport > 0 {
-                                BadgeItemView(imageName: "badge_SportLegend 1", title: "Platinum Sport", isUnlocked: true, earnedCount: platiniSport)
+                            if progress.hasOrangeSport {
+                                BadgeItemView(imageName: "badgeSportGold", title: "Gold Sport", isUnlocked: progress.hasGoldSport, earnedCount: progress.completedSportEvents, progress: progress.goldSportProgress)
                             }
-                            if oriSport > 0 {
-                                BadgeItemView(imageName: "badgeSportGold", title: "Gold Sport", isUnlocked: true, earnedCount: oriSport)
+                            if progress.hasSilverSport {
+                                BadgeItemView(imageName: "arancioneSport", title: "Orange Sport", isUnlocked: progress.hasOrangeSport, earnedCount: progress.completedSportEvents, progress: progress.orangeSportProgress)
                             }
-                            if arancioniSport > 0 {
-                                BadgeItemView(imageName: "arancioneSport", title: "Orange Sport", isUnlocked: true, earnedCount: arancioniSport)
+                            if progress.hasBronzeSport {
+                                BadgeItemView(imageName: "ArgentoSport", title: "Argento Sport", isUnlocked: progress.hasSilverSport, earnedCount: progress.completedSportEvents, progress: progress.silverSportProgress)
                             }
-                            if argentiSport > 0 {
-                                BadgeItemView(imageName: "ArgentoSport", title: "Argento Sport", isUnlocked: true, earnedCount: argentiSport)
-                            }
-                            if bronziSport > 0 {
-                                BadgeItemView(imageName: "badge_bronzo2sport", title: "Bronze Sport", isUnlocked: true, earnedCount: bronziSport)
-                            }
+                            BadgeItemView(imageName: "badge_bronzo2sport", title: "Bronze Sport", isUnlocked: progress.hasBronzeSport, earnedCount: progress.completedSportEvents, progress: progress.bronzeSportProgress)
                         }
                         .padding(.horizontal)
                     }
@@ -183,18 +119,16 @@ struct RewardsCategoryDetailView: View {
     }
 }
 
-// COMPONENTE PER IL SINGOLO BADGE
+
 struct BadgeItemView: View {
     var imageName: String
     var title: String
     var isUnlocked: Bool
-    var earnedCount: Int = 0
-    var progress: Double = 0.0
+    var earnedCount: Int
+    var progress: Double
     
     var body: some View {
         VStack(spacing: 8) {
-            
-            // Immagine Badge
             Image(imageName)
                 .resizable()
                 .scaledToFit()
@@ -202,14 +136,13 @@ struct BadgeItemView: View {
                 .grayscale(isUnlocked ? 0.0 : 1.0)
                 .opacity(isUnlocked ? 1.0 : 0.6)
             
-            // Titolo
             Text(title)
                 .font(.system(size: 11, weight: .bold))
+                .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
             
-            // Indicatore inferiore: Contatore o Barra
+            // SE LA MEDAGLIA È SBLOCCATA
             if isUnlocked {
-                // Pill Numerico
                 Text("\(earnedCount)")
                     .font(.system(size: 11, weight: .bold))
                     .foregroundColor(.white)
@@ -217,8 +150,9 @@ struct BadgeItemView: View {
                     .padding(.vertical, 4)
                     .background(Color.teal)
                     .clipShape(Capsule())
-            } else {
-                // Barra di progresso
+            }
+            // SE È BLOCCATA (Barra di progresso)
+            else {
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
                         Capsule()
@@ -237,15 +171,5 @@ struct BadgeItemView: View {
         .frame(maxWidth: .infinity)
     }
 }
-
-// Anteprima per Xcode
-struct RewardsCategoryDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            RewardsCategoryDetailView()
-        }
-    }
-}
 #endif
-
 

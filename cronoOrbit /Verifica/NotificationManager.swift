@@ -1,20 +1,25 @@
 import Foundation
 import UserNotifications
 
-#if os(iOS) // solo iPhone
+#if os(iOS)
 
 /// Alla fine di ogni impegno manda "Hai svolto «…»?" con tre risposte rapide: Fatto / In parte / Non fatto.
 final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationManager()
 
     private var store: EventStore?
+    private var progress: ProgressManager?
+    
     private let center = UNUserNotificationCenter.current()
     private let categoryID = "VERIFY"
 
-    /// Da chiamare appena parte l'app (serve a ricevere le risposte anche a app chiusa)
-    func start(store: EventStore) {
+    func start(store: EventStore, progress: ProgressManager) {
+    
         self.store = store
+        self.progress = progress
+        
         center.delegate = self
+        
         let done = UNNotificationAction(identifier: "done", title: String(localized: "Fatto"), options: [])
         let partial = UNNotificationAction(identifier: "partial", title: String(localized: "In parte"), options: [])
         let skipped = UNNotificationAction(identifier: "skipped", title: String(localized: "Non fatto"), options: [.destructive])
@@ -24,7 +29,7 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         ])
     }
 
-    /// Ricrea le notifiche: una per ogni impegno futuro non ancora verificato.
+    
     func reschedule(for events: [Event]) async {
         var status = await center.notificationSettings().authorizationStatus
         if status == .notDetermined {
@@ -82,9 +87,12 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     private func handle(action: String, id: UUID) {
         switch action {
         case "done":    store?.setCompletion(id, status: .done)
+            if let event = store?.events.first(where: { $0.id == id }) {
+                           progress?.completeEvent(category: event.category.title) 
+                       }
         case "partial": store?.setCompletion(id, status: .partial)
         case "skipped": store?.setCompletion(id, status: .skipped)
-        default:        break                              // tocco sulla notifica: l'app si apre sulla card "Da verificare"
+        default:        break
         }
     }
 }
