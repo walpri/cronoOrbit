@@ -80,6 +80,10 @@
 		50017DB23075058D00EA13DB /* Glass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D3E3075058D00EA13DB /* Glass.swift */; };
 		50017DB33075058D00EA13DB /* cronoOrbitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D393075058D00EA13DB /* cronoOrbitApp.swift */; };
 		50474C7A306E5A4600AAE6ED /* cronoOrbit watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 50474C5B306E5A4500AAE6ED /* cronoOrbit watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5E9F4E523075084C004DF84B /* MedalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E513075084C004DF84B /* MedalDetailView.swift */; };
+		5E9F4E533075084C004DF84B /* MedalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E513075084C004DF84B /* MedalDetailView.swift */; };
+		5E9F4E5530750874004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */; };
+		5E9F4E5630750874004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,6 +170,8 @@
 		50474C67306E5A4600AAE6ED /* cronoOrbit watch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "cronoOrbit watch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50474C71306E5A4600AAE6ED /* cronoOrbit watch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "cronoOrbit watch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E44F534306CF8370082727A /* cronoOrbit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cronoOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E9F4E513075084C004DF84B /* MedalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalDetailView.swift; sourceTree = "<group>"; };
+		5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsCategoryDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,6 +283,8 @@
 			isa = PBXGroup;
 			children = (
 				50017D543075058D00EA13DB /* RewardsView.swift */,
+				5E9F4E513075084C004DF84B /* MedalDetailView.swift */,
+				5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */,
 			);
 			path = Premi;
 			sourceTree = "<group>";
@@ -470,6 +478,10 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				de,
+				es,
+				fr,
+				it,
 				en,
 				Base,
 			);
@@ -534,10 +546,12 @@
 				50017D763075058D00EA13DB /* NewEventSheet.swift in Sources */,
 				50017D773075058D00EA13DB /* WatchHomeView.swift in Sources */,
 				50017D783075058D00EA13DB /* AssistantViewModel.swift in Sources */,
+				5E9F4E5530750874004DF84B /* RewardsCategoryDetailView.swift in Sources */,
 				50017D793075058D00EA13DB /* RewardsView.swift in Sources */,
 				50017D7A3075058D00EA13DB /* DayRing.swift in Sources */,
 				50017D7B3075058D00EA13DB /* LocalParser.swift in Sources */,
 				50017D7C3075058D00EA13DB /* VerificationCard.swift in Sources */,
+				5E9F4E523075084C004DF84B /* MedalDetailView.swift in Sources */,
 				50017D7D3075058D00EA13DB /* VerificationView.swift in Sources */,
 				50017D7E3075058D00EA13DB /* NotificationManager.swift in Sources */,
 				50017D7F3075058D00EA13DB /* WatchEventDetailView.swift in Sources */,
@@ -582,10 +596,12 @@
 				50017D9D3075058D00EA13DB /* NewEventSheet.swift in Sources */,
 				50017D9E3075058D00EA13DB /* WatchHomeView.swift in Sources */,
 				50017D9F3075058D00EA13DB /* AssistantViewModel.swift in Sources */,
+				5E9F4E5630750874004DF84B /* RewardsCategoryDetailView.swift in Sources */,
 				50017DA03075058D00EA13DB /* RewardsView.swift in Sources */,
 				50017DA13075058D00EA13DB /* DayRing.swift in Sources */,
 				50017DA23075058D00EA13DB /* LocalParser.swift in Sources */,
 				50017DA33075058D00EA13DB /* VerificationCard.swift in Sources */,
+				5E9F4E533075084C004DF84B /* MedalDetailView.swift in Sources */,
 				50017DA43075058D00EA13DB /* VerificationView.swift in Sources */,
 				50017DA53075058D00EA13DB /* NotificationManager.swift in Sources */,
 				50017DA63075058D00EA13DB /* WatchEventDetailView.swift in Sources */,
