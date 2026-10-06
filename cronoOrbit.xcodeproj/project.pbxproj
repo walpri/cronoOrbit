@@ -27,14 +27,6 @@
 		50017CDF3074EFCC00EA13DB /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CD53074EFCC00EA13DB /* NotificationManager.swift */; };
 		50017CE03074EFCC00EA13DB /* VerificationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CD63074EFCC00EA13DB /* VerificationCard.swift */; };
 		50017CE13074EFCC00EA13DB /* VerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CD73074EFCC00EA13DB /* VerificationView.swift */; };
-		50017CE73074EFD500EA13DB /* WatchRingComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE43074EFD500EA13DB /* WatchRingComponents.swift */; };
-		50017CE83074EFD500EA13DB /* WatchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE53074EFD500EA13DB /* WatchStore.swift */; };
-		50017CE93074EFD500EA13DB /* cronoOrbitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE23074EFD500EA13DB /* cronoOrbitWatchApp.swift */; };
-		50017CEA3074EFD500EA13DB /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE33074EFD500EA13DB /* WatchHomeView.swift */; };
-		50017CEB3074EFD500EA13DB /* WatchRingComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE43074EFD500EA13DB /* WatchRingComponents.swift */; };
-		50017CEC3074EFD500EA13DB /* WatchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE53074EFD500EA13DB /* WatchStore.swift */; };
-		50017CED3074EFD500EA13DB /* cronoOrbitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE23074EFD500EA13DB /* cronoOrbitWatchApp.swift */; };
-		50017CEE3074EFD500EA13DB /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CE33074EFD500EA13DB /* WatchHomeView.swift */; };
 		50017CF23074EFE200EA13DB /* EventMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CEF3074EFE200EA13DB /* EventMatcher.swift */; };
 		50017CF33074EFE200EA13DB /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CF03074EFE200EA13DB /* Scheduler.swift */; };
 		50017CF43074EFE200EA13DB /* EventMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017CEF3074EFE200EA13DB /* EventMatcher.swift */; };
@@ -67,6 +59,18 @@
 		50017D233074F05300EA13DB /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D1C3074F05300EA13DB /* WeekView.swift */; };
 		50017D243074F05300EA13DB /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D1B3074F05300EA13DB /* ReportView.swift */; };
 		50017D253074F05300EA13DB /* ReportCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D1A3074F05300EA13DB /* ReportCalculator.swift */; };
+		50017D2D3075004B00EA13DB /* WatchEventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D293075004B00EA13DB /* WatchEventDetailView.swift */; };
+		50017D2E3075004B00EA13DB /* WatchEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D2A3075004B00EA13DB /* WatchEventStore.swift */; };
+		50017D2F3075004B00EA13DB /* cronoOrbitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D263075004B00EA13DB /* cronoOrbitWatchApp.swift */; };
+		50017D303075004B00EA13DB /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D2B3075004B00EA13DB /* WatchHomeView.swift */; };
+		50017D313075004B00EA13DB /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D283075004B00EA13DB /* WatchConnectivity.swift */; };
+		50017D323075004B00EA13DB /* WatchCalendarImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D273075004B00EA13DB /* WatchCalendarImporter.swift */; };
+		50017D333075004B00EA13DB /* WatchEventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D293075004B00EA13DB /* WatchEventDetailView.swift */; };
+		50017D343075004B00EA13DB /* WatchEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D2A3075004B00EA13DB /* WatchEventStore.swift */; };
+		50017D353075004B00EA13DB /* cronoOrbitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D263075004B00EA13DB /* cronoOrbitWatchApp.swift */; };
+		50017D363075004B00EA13DB /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D2B3075004B00EA13DB /* WatchHomeView.swift */; };
+		50017D373075004B00EA13DB /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D283075004B00EA13DB /* WatchConnectivity.swift */; };
+		50017D383075004B00EA13DB /* WatchCalendarImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50017D273075004B00EA13DB /* WatchCalendarImporter.swift */; };
 		50474C7A306E5A4600AAE6ED /* cronoOrbit watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 50474C5B306E5A4500AAE6ED /* cronoOrbit watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		50474D2C306E692700AAE6ED /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 50474D17306E692700AAE6ED /* InfoPlist.xcstrings */; };
 		50474D2D306E692700AAE6ED /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 50474D18306E692700AAE6ED /* Localizable.xcstrings */; };
@@ -135,10 +139,6 @@
 		50017CD63074EFCC00EA13DB /* VerificationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationCard.swift; sourceTree = "<group>"; };
 		50017CD73074EFCC00EA13DB /* VerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationView.swift; sourceTree = "<group>"; };
 		50017CD83074EFCC00EA13DB /* VerifyRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyRow.swift; sourceTree = "<group>"; };
-		50017CE23074EFD500EA13DB /* cronoOrbitWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cronoOrbitWatchApp.swift; sourceTree = "<group>"; };
-		50017CE33074EFD500EA13DB /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
-		50017CE43074EFD500EA13DB /* WatchRingComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRingComponents.swift; sourceTree = "<group>"; };
-		50017CE53074EFD500EA13DB /* WatchStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchStore.swift; sourceTree = "<group>"; };
 		50017CEF3074EFE200EA13DB /* EventMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMatcher.swift; sourceTree = "<group>"; };
 		50017CF03074EFE200EA13DB /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
 		50017CF63074EFF200EA13DB /* AssistantService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantService.swift; sourceTree = "<group>"; };
@@ -155,6 +155,12 @@
 		50017D1A3074F05300EA13DB /* ReportCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportCalculator.swift; sourceTree = "<group>"; };
 		50017D1B3074F05300EA13DB /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		50017D1C3074F05300EA13DB /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
+		50017D263075004B00EA13DB /* cronoOrbitWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cronoOrbitWatchApp.swift; sourceTree = "<group>"; };
+		50017D273075004B00EA13DB /* WatchCalendarImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCalendarImporter.swift; sourceTree = "<group>"; };
+		50017D283075004B00EA13DB /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
+		50017D293075004B00EA13DB /* WatchEventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchEventDetailView.swift; sourceTree = "<group>"; };
+		50017D2A3075004B00EA13DB /* WatchEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchEventStore.swift; sourceTree = "<group>"; };
+		50017D2B3075004B00EA13DB /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
 		50474C5B306E5A4500AAE6ED /* cronoOrbit watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "cronoOrbit watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50474C67306E5A4600AAE6ED /* cronoOrbit watch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "cronoOrbit watch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50474C71306E5A4600AAE6ED /* cronoOrbit watch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "cronoOrbit watch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -229,17 +235,6 @@
 			path = Verifica;
 			sourceTree = "<group>";
 		};
-		50017CE63074EFD500EA13DB /* Watch 2 */ = {
-			isa = PBXGroup;
-			children = (
-				50017CE23074EFD500EA13DB /* cronoOrbitWatchApp.swift */,
-				50017CE33074EFD500EA13DB /* WatchHomeView.swift */,
-				50017CE43074EFD500EA13DB /* WatchRingComponents.swift */,
-				50017CE53074EFD500EA13DB /* WatchStore.swift */,
-			);
-			path = "Watch 2";
-			sourceTree = "<group>";
-		};
 		50017CF13074EFE200EA13DB /* Scheduling */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,6 +300,19 @@
 			path = Settimana;
 			sourceTree = "<group>";
 		};
+		50017D2C3075004B00EA13DB /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				50017D263075004B00EA13DB /* cronoOrbitWatchApp.swift */,
+				50017D273075004B00EA13DB /* WatchCalendarImporter.swift */,
+				50017D283075004B00EA13DB /* WatchConnectivity.swift */,
+				50017D293075004B00EA13DB /* WatchEventDetailView.swift */,
+				50017D2A3075004B00EA13DB /* WatchEventStore.swift */,
+				50017D2B3075004B00EA13DB /* WatchHomeView.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
 		50474D0E306E692700AAE6ED /* Premi */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,7 +346,7 @@
 				50017D1D3074F05300EA13DB /* Settimana */,
 				50017CD93074EFCC00EA13DB /* Verifica */,
 				50017CF13074EFE200EA13DB /* Scheduling */,
-				50017CE63074EFD500EA13DB /* Watch 2 */,
+				50017D2C3075004B00EA13DB /* Watch */,
 				50474D17306E692700AAE6ED /* InfoPlist.xcstrings */,
 				50474D18306E692700AAE6ED /* Localizable.xcstrings */,
 				5E713988306E6C190003BFC3 /* Assets.xcassets */,
@@ -530,7 +538,6 @@
 				50017D173074F03C00EA13DB /* NewEventSheet.swift in Sources */,
 				50017CCE3074EF9700EA13DB /* Glass.swift in Sources */,
 				5E713990306E6CF70003BFC3 /* RewardsView.swift in Sources */,
-				50017CEB3074EFD500EA13DB /* WatchRingComponents.swift in Sources */,
 				50017CF23074EFE200EA13DB /* EventMatcher.swift in Sources */,
 				50017CFB3074EFF200EA13DB /* AssistantViewModel.swift in Sources */,
 				50017CFC3074EFF200EA13DB /* AssistantService.swift in Sources */,
@@ -538,10 +545,13 @@
 				50017CFE3074EFF200EA13DB /* LocalParser.swift in Sources */,
 				50017D0C3074F01B00EA13DB /* EventRow.swift in Sources */,
 				50017D0D3074F01B00EA13DB /* HomeView.swift in Sources */,
+				50017D2D3075004B00EA13DB /* WatchEventDetailView.swift in Sources */,
+				50017D2E3075004B00EA13DB /* WatchEventStore.swift in Sources */,
+				50017D2F3075004B00EA13DB /* cronoOrbitWatchApp.swift in Sources */,
+				50017D303075004B00EA13DB /* WatchHomeView.swift in Sources */,
+				50017D313075004B00EA13DB /* WatchConnectivity.swift in Sources */,
+				50017D323075004B00EA13DB /* WatchCalendarImporter.swift in Sources */,
 				50017CF33074EFE200EA13DB /* Scheduler.swift in Sources */,
-				50017CEC3074EFD500EA13DB /* WatchStore.swift in Sources */,
-				50017CED3074EFD500EA13DB /* cronoOrbitWatchApp.swift in Sources */,
-				50017CEE3074EFD500EA13DB /* WatchHomeView.swift in Sources */,
 				50017CD33074EFA900EA13DB /* Models.swift in Sources */,
 				50017CC73074EF5B00EA13DB /* RootView.swift in Sources */,
 				50017CDE3074EFCC00EA13DB /* VerifyRow.swift in Sources */,
@@ -578,17 +588,19 @@
 				50017CF53074EFE200EA13DB /* Scheduler.swift in Sources */,
 				50017D053074F00300EA13DB /* EventDetailView.swift in Sources */,
 				50017CD43074EFA900EA13DB /* Models.swift in Sources */,
-				50017CE73074EFD500EA13DB /* WatchRingComponents.swift in Sources */,
-				50017CE83074EFD500EA13DB /* WatchStore.swift in Sources */,
-				50017CE93074EFD500EA13DB /* cronoOrbitWatchApp.swift in Sources */,
 				50017D0A3074F01B00EA13DB /* EventRow.swift in Sources */,
 				50017D0B3074F01B00EA13DB /* HomeView.swift in Sources */,
 				50017D223074F05300EA13DB /* MonthGridView.swift in Sources */,
 				50017D233074F05300EA13DB /* WeekView.swift in Sources */,
 				50017D243074F05300EA13DB /* ReportView.swift in Sources */,
 				50017D253074F05300EA13DB /* ReportCalculator.swift in Sources */,
-				50017CEA3074EFD500EA13DB /* WatchHomeView.swift in Sources */,
 				50017CDA3074EFCC00EA13DB /* VerifyRow.swift in Sources */,
+				50017D333075004B00EA13DB /* WatchEventDetailView.swift in Sources */,
+				50017D343075004B00EA13DB /* WatchEventStore.swift in Sources */,
+				50017D353075004B00EA13DB /* cronoOrbitWatchApp.swift in Sources */,
+				50017D363075004B00EA13DB /* WatchHomeView.swift in Sources */,
+				50017D373075004B00EA13DB /* WatchConnectivity.swift in Sources */,
+				50017D383075004B00EA13DB /* WatchCalendarImporter.swift in Sources */,
 				50017CDB3074EFCC00EA13DB /* NotificationManager.swift in Sources */,
 				50017CDC3074EFCC00EA13DB /* VerificationCard.swift in Sources */,
 				50017CDD3074EFCC00EA13DB /* VerificationView.swift in Sources */,
