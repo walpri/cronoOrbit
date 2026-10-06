@@ -56,6 +56,9 @@
 		5E71398A306E6C190003BFC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E713988306E6C190003BFC3 /* Assets.xcassets */; };
 		5E71398F306E6CF70003BFC3 /* RewardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E71398E306E6CF70003BFC3 /* RewardsView.swift */; };
 		5E713990306E6CF70003BFC3 /* RewardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E71398E306E6CF70003BFC3 /* RewardsView.swift */; };
+		5E9F4E4D3074E8DC004DF84B /* MedalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E4C3074E8DC004DF84B /* MedalDetailView.swift */; };
+		5E9F4E4F3074E92D004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E4E3074E92D004DF84B /* RewardsCategoryDetailView.swift */; };
+		5E9F4E503074E92D004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E4E3074E92D004DF84B /* RewardsCategoryDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +133,8 @@
 		5E44F534306CF8370082727A /* cronoOrbit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cronoOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E713988306E6C190003BFC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E71398E306E6CF70003BFC3 /* RewardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsView.swift; sourceTree = "<group>"; };
+		5E9F4E4C3074E8DC004DF84B /* MedalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalDetailView.swift; sourceTree = "<group>"; };
+		5E9F4E4E3074E92D004DF84B /* RewardsCategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsCategoryDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,6 +226,8 @@
 			isa = PBXGroup;
 			children = (
 				5E71398E306E6CF70003BFC3 /* RewardsView.swift */,
+				5E9F4E4C3074E8DC004DF84B /* MedalDetailView.swift */,
+				5E9F4E4E3074E92D004DF84B /* RewardsCategoryDetailView.swift */,
 			);
 			path = Premi;
 			sourceTree = "<group>";
@@ -469,6 +476,7 @@
 				50474D3D306E692700AAE6ED /* Models.swift in Sources */,
 				549AD69A306F9CCA009D2575 /* WatchConnectivity.swift in Sources */,
 				50474D3E306E692700AAE6ED /* MonthGridView.swift in Sources */,
+				5E9F4E503074E92D004DF84B /* RewardsCategoryDetailView.swift in Sources */,
 				50474D3F306E692700AAE6ED /* RootView.swift in Sources */,
 			);
 		};
@@ -495,9 +503,11 @@
 				50474D1F306E692700AAE6ED /* Glass.swift in Sources */,
 				50474D20306E692700AAE6ED /* WatchEventStore.swift in Sources */,
 				50474D21306E692700AAE6ED /* WatchHomeView.swift in Sources */,
+				5E9F4E4F3074E92D004DF84B /* RewardsCategoryDetailView.swift in Sources */,
 				5E71398F306E6CF70003BFC3 /* RewardsView.swift in Sources */,
 				50474D22306E692700AAE6ED /* EventRow.swift in Sources */,
 				50474D24306E692700AAE6ED /* cronoOrbitWatchApp.swift in Sources */,
+				5E9F4E4D3074E8DC004DF84B /* MedalDetailView.swift in Sources */,
 				50474D25306E692700AAE6ED /* EventDetailView.swift in Sources */,
 				50474D26306E692700AAE6ED /* WeekView.swift in Sources */,
 				50474D27306E692700AAE6ED /* NewEventSheet.swift in Sources */,

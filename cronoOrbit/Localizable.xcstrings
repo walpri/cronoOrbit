@@ -29,6 +29,9 @@
         }
       }
     },
+    "%lld" : {
+
+    },
     "%lld eventi importati" : {
       "localizations" : {
         "de" : {
@@ -413,6 +416,9 @@
           }
         }
       }
+    },
+    "Come si ottiene:" : {
+
     },
     "Completa altri impegni Focus: il prossimo traguardo ti aspetta." : {
       "extractionState" : "stale",
@@ -1873,7 +1879,6 @@
       }
     },
     "Sport" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1929,6 +1934,9 @@
           }
         }
       }
+    },
+    "Study" : {
+
     },
     "Tempo libero" : {
       "comment" : "A title for a day ring when there are no events.",
