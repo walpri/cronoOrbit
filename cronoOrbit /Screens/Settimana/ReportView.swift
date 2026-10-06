@@ -3,29 +3,52 @@ import Charts
 
 #if os(iOS)
 
-// MARK: - Resoconto settimanale
+// MARK: - Resoconto settimanale e mensile
 
 struct ReportView: View {
     @Environment(EventStore.self) private var store
-    @State private var weekOffset = 0                 // 0 = questa settimana, -1 = la scorsa…
+    @State private var period = ReportPeriod.week
+    @State private var offset = 0                     // 0 = periodo corrente, -1 = il precedente…
     @State private var metric = ReportMetric.done
 
     private var cal: Calendar { .current }
 
-    private func weekStart(offset: Int) -> Date {
-        let current = cal.dateInterval(of: .weekOfYear, for: .now)?.start ?? cal.startOfDay(for: .now)
-        return cal.date(byAdding: .weekOfYear, value: offset, to: current) ?? current
+    /// Primo giorno del periodo (settimana o mese) spostato di `offset` periodi
+    private func periodStart(_ offset: Int) -> Date {
+        switch period {
+        case .week:
+            let current = cal.dateInterval(of: .weekOfYear, for: .now)?.start ?? cal.startOfDay(for: .now)
+            return cal.date(byAdding: .weekOfYear, value: offset, to: current) ?? current
+        case .month:
+            let current = cal.dateInterval(of: .month, for: .now)?.start ?? cal.startOfDay(for: .now)
+            return cal.date(byAdding: .month, value: offset, to: current) ?? current
+        }
+    }
+
+    private func dayCount(_ start: Date) -> Int {
+        period == .week ? 7 : (cal.range(of: .day, in: .month, for: start)?.count ?? 30)
+    }
+
+    private func makeReport(_ offset: Int) -> PeriodReport {
+        let start = periodStart(offset)
+        return ReportCalculator.report(start: start, dayCount: dayCount(start), events: store.events, metric: metric)
     }
 
     var body: some View {
-        let start = weekStart(offset: weekOffset)
-        let report = ReportCalculator.report(weekStart: start, events: store.events, metric: metric)
-        let previous = ReportCalculator.report(weekStart: weekStart(offset: weekOffset - 1), events: store.events, metric: metric)
+        let report = makeReport(offset)
+        let previous = makeReport(offset - 1)
 
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
-                    header(start)
+                    Picker("Periodo", selection: $period) {
+                        Text("Settimana").tag(ReportPeriod.week)
+                        Text("Mese").tag(ReportPeriod.month)
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: period) { offset = 0 }
+
+                    header(report)
 
                     Picker("Vista", selection: $metric) {
                         Text("Svolte").tag(ReportMetric.done)
@@ -36,7 +59,8 @@ struct ReportView: View {
                     totalCard(report, previous)
 
                     if report.total == 0 {
-                        Text("Nessun impegno in questa settimana.")
+                        Text(period == .week ? LocalizedStringKey("Nessun impegno in questa settimana.")
+                                             : LocalizedStringKey("Nessun impegno in questo mese."))
                             .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 24)
@@ -53,24 +77,33 @@ struct ReportView: View {
         }
     }
 
-    // MARK: Navigazione tra le settimane
+    // MARK: Navigazione tra i periodi
 
-    private func header(_ start: Date) -> some View {
-        let end = cal.date(byAdding: .day, value: 6, to: start) ?? start
-        let range = "\(start.formatted(.dateTime.day().month(.abbreviated))) – \(end.formatted(.dateTime.day().month(.abbreviated)))"
+    private func header(_ report: PeriodReport) -> some View {
+        let start = report.start
+        let end = cal.date(byAdding: .day, value: report.dayCount - 1, to: start) ?? start
+        let title = period == .week
+            ? "\(start.formatted(.dateTime.day().month(.abbreviated))) – \(end.formatted(.dateTime.day().month(.abbreviated)))"
+            : start.formatted(.dateTime.month(.wide).year())
         return HStack {
-            Button("Settimana precedente", systemImage: "chevron.left") { weekOffset -= 1 }
+            Button(period == .week ? LocalizedStringKey("Settimana precedente") : LocalizedStringKey("Mese precedente"),
+                   systemImage: "chevron.left") { offset -= 1 }
             Spacer()
             VStack(spacing: 2) {
-                Text(range).font(.headline)
-                Text("Settimana \(cal.component(.weekOfYear, from: start))")
-                    .font(.caption).foregroundStyle(.secondary)
+                Text(title).font(.headline)
+                if period == .week {
+                    Text("Settimana \(cal.component(.weekOfYear, from: start))")
+                        .font(.caption).foregroundStyle(.secondary)
+                } else {
+                    Text("\(report.dayCount) giorni").font(.caption).foregroundStyle(.secondary)
+                }
             }
             Spacer()
-            if weekOffset != 0 {
-                Button("Oggi") { weekOffset = 0 }.font(.footnote.weight(.semibold))
+            if offset != 0 {
+                Button("Oggi") { offset = 0 }.font(.footnote.weight(.semibold))
             }
-            Button("Settimana successiva", systemImage: "chevron.right") { weekOffset += 1 }
+            Button(period == .week ? LocalizedStringKey("Settimana successiva") : LocalizedStringKey("Mese successivo"),
+                   systemImage: "chevron.right") { offset += 1 }
         }
         .labelStyle(.iconOnly)
         .buttonStyle(.plain)
@@ -81,7 +114,7 @@ struct ReportView: View {
 
     // MARK: Totale
 
-    private func totalCard(_ report: WeekReport, _ previous: WeekReport) -> some View {
+    private func totalCard(_ report: PeriodReport, _ previous: PeriodReport) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(metric == .done ? LocalizedStringKey("Totale svolto") : LocalizedStringKey("Totale pianificato"))
                 .font(.footnote).foregroundStyle(.secondary)
@@ -90,7 +123,9 @@ struct ReportView: View {
             if let d = delta(report.total, previous.total) {
                 HStack(spacing: 6) {
                     Text(d.text).foregroundStyle(d.color).font(.footnote.weight(.semibold))
-                    Text("rispetto alla settimana scorsa").font(.footnote).foregroundStyle(.secondary)
+                    Text(period == .week ? LocalizedStringKey("rispetto alla settimana scorsa")
+                                         : LocalizedStringKey("rispetto al mese scorso"))
+                        .font(.footnote).foregroundStyle(.secondary)
                 }
             }
             if let rate = report.completionRate {
@@ -128,15 +163,15 @@ struct ReportView: View {
         let hours: Double
     }
 
-    private func chartCard(_ report: WeekReport) -> some View {
-        let points: [DayPoint] = (0..<7).flatMap { d -> [DayPoint] in
-            let day = cal.date(byAdding: .day, value: d, to: report.weekStart) ?? report.weekStart
+    private func chartCard(_ report: PeriodReport) -> some View {
+        let points: [DayPoint] = (0..<report.dayCount).flatMap { d -> [DayPoint] in
+            let day = cal.date(byAdding: .day, value: d, to: report.start) ?? report.start
             return EventCategory.allCases.compactMap { c -> DayPoint? in
                 let h = (report.daily[d][c] ?? 0) / 3600
                 return h > 0 ? DayPoint(day: day, category: c.title, hours: h) : nil
             }
         }
-        let end = cal.date(byAdding: .day, value: 7, to: report.weekStart) ?? report.weekStart
+        let end = cal.date(byAdding: .day, value: report.dayCount, to: report.start) ?? report.start
 
         return VStack(alignment: .leading, spacing: 10) {
             Text("Ore per giorno").font(.headline)
@@ -146,10 +181,11 @@ struct ReportView: View {
             }
             .chartForegroundStyleScale(domain: EventCategory.allCases.map { $0.title },
                                        range: EventCategory.allCases.map { $0.color })
-            .chartXScale(domain: report.weekStart...end)
+            .chartXScale(domain: report.start...end)
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { _ in
-                    AxisValueLabel(format: .dateTime.weekday(.narrow))
+                // settimana: una lettera per giorno · mese: il numero del giorno ogni 5
+                AxisMarks(values: .stride(by: .day, count: period == .week ? 1 : 5)) { _ in
+                    AxisValueLabel(format: period == .week ? Date.FormatStyle().weekday(.narrow) : Date.FormatStyle().day())
                 }
             }
             .chartYAxis {
@@ -168,7 +204,7 @@ struct ReportView: View {
 
     // MARK: Elenco per categoria
 
-    private func categoryCard(_ report: WeekReport, _ previous: WeekReport) -> some View {
+    private func categoryCard(_ report: PeriodReport, _ previous: PeriodReport) -> some View {
         let rows = EventCategory.allCases
             .filter { (report.totals[$0] ?? 0) > 0 }
             .sorted { (report.totals[$0] ?? 0) > (report.totals[$1] ?? 0) }
@@ -195,7 +231,7 @@ struct ReportView: View {
         .padding(16).frame(maxWidth: .infinity, alignment: .leading).glass(26)
     }
 
-    // MARK: Differenza con la settimana precedente
+    // MARK: Differenza con il periodo precedente
 
     private func delta(_ now: TimeInterval, _ before: TimeInterval) -> (text: String, color: Color)? {
         let d = now - before

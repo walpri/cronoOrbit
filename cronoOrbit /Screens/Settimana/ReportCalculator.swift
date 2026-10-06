@@ -2,16 +2,22 @@ import Foundation
 
 // MARK: - Calcolo del resoconto settimanale (puro, senza interfaccia)
 
+enum ReportPeriod: String, CaseIterable, Identifiable {
+    case week, month
+    var id: String { rawValue }
+}
+
 enum ReportMetric: String, CaseIterable, Identifiable {
     case done      // ore VERIFICATE: contano solo gli impegni che hai confermato (o misurato con "Avvia")
     case planned   // ore pianificate (tutti gli impegni della settimana)
     var id: String { rawValue }
 }
 
-struct WeekReport {
-    var weekStart: Date
+struct PeriodReport {
+    var start: Date
+    var dayCount: Int                               // 7 per la settimana, 28-31 per il mese
     var totals: [EventCategory: TimeInterval]
-    var daily: [[EventCategory: TimeInterval]]      // 7 giorni, a partire da weekStart
+    var daily: [[EventCategory: TimeInterval]]      // un elemento per giorno, a partire da `start`
     var plannedChecked: TimeInterval                // ore previste degli impegni finiti e verificati
     var actualChecked: TimeInterval                 // ore realmente svolte in quegli impegni
     var unverified: Int                             // impegni finiti senza esito
@@ -23,15 +29,17 @@ struct WeekReport {
     }
 }
 
+typealias WeekReport = PeriodReport
+
 enum ReportCalculator {
 
-    /// Ore per categoria in una settimana.
+    /// Ore per categoria in un periodo (settimana o mese).
     /// - Svolte: solo impegni con un esito (Fatto / In parte, o misurati con Avvia/Termina). I "Non fatto" valgono 0.
     /// - Due impegni sovrapposti della stessa categoria non contano doppio.
     /// - Gli eventi "tutto il giorno" non contano.
-    static func report(weekStart: Date, events: [Event], metric: ReportMetric,
-                       now: Date = .now, cal: Calendar = .current) -> WeekReport {
-        let weekEnd = cal.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
+    static func report(start periodStart: Date, dayCount: Int, events: [Event], metric: ReportMetric,
+                       now: Date = .now, cal: Calendar = .current) -> PeriodReport {
+        let periodEnd = cal.date(byAdding: .day, value: dayCount, to: periodStart) ?? periodStart
 
         var perCategory: [EventCategory: [(start: Date, end: Date)]] = [:]
         var plannedChecked: TimeInterval = 0
@@ -52,13 +60,13 @@ enum ReportCalculator {
                 }
             }
             if let iv = interval {
-                let s = max(iv.start, weekStart)
-                let t = min(iv.end, weekEnd)
+                let s = max(iv.start, periodStart)
+                let t = min(iv.end, periodEnd)
                 if t > s { perCategory[e.category, default: []].append((s, t)) }
             }
 
             // 2) statistiche di completamento: impegni finiti in questa settimana
-            if e.end > weekStart && e.end <= weekEnd && e.end <= now {
+            if e.end > periodStart && e.end <= periodEnd && e.end <= now {
                 if let c = e.completion {
                     plannedChecked += e.duration
                     actualChecked += min(e.duration, TimeInterval(c.actualMinutes) * 60)
@@ -69,7 +77,7 @@ enum ReportCalculator {
         }
 
         var totals: [EventCategory: TimeInterval] = [:]
-        var daily = Array(repeating: [EventCategory: TimeInterval](), count: 7)
+        var daily = Array(repeating: [EventCategory: TimeInterval](), count: dayCount)
 
         for (category, list) in perCategory {
             var merged: [(start: Date, end: Date)] = []
@@ -82,15 +90,15 @@ enum ReportCalculator {
             }
             for iv in merged {
                 totals[category, default: 0] += iv.end.timeIntervalSince(iv.start)
-                for d in 0..<7 {
-                    guard let dayStart = cal.date(byAdding: .day, value: d, to: weekStart),
-                          let dayEnd = cal.date(byAdding: .day, value: d + 1, to: weekStart) else { continue }
+                for d in 0..<dayCount {
+                    guard let dayStart = cal.date(byAdding: .day, value: d, to: periodStart),
+                          let dayEnd = cal.date(byAdding: .day, value: d + 1, to: periodStart) else { continue }
                     let overlap = min(iv.end, dayEnd).timeIntervalSince(max(iv.start, dayStart))
                     if overlap > 0 { daily[d][category, default: 0] += overlap }
                 }
             }
         }
-        return WeekReport(weekStart: weekStart, totals: totals, daily: daily,
+        return PeriodReport(start: periodStart, dayCount: dayCount, totals: totals, daily: daily,
                           plannedChecked: plannedChecked, actualChecked: actualChecked, unverified: unverified)
     }
 }
