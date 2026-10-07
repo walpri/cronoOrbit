@@ -71,10 +71,10 @@ class ProgressManager: ObservableObject {
             case "study", "studio", "studiare":
                 self.completedStudyEvents += 1
                 print("Study salito a: \(self.completedStudyEvents)")
-            case "focus", "deep focus", "lavoro", "work": // <-- Tutto minuscolo!
+            case "focus", "deep focus", "lavoro", "work":
                 self.completedFocusEvents += 1
                 print("Focus salito a: \(self.completedFocusEvents)")
-            case "sport", "allenamento", "health": // <-- Tutto minuscolo!
+            case "sport", "allenamento", "health":
                 self.completedSportEvents += 1
                 print("Sport salito a: \(self.completedSportEvents)")
             default:

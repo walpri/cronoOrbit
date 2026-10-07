@@ -17,6 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5E44F533306CF8370082727A"
                BuildableName = "cronoOrbit.app"
+               BlueprintName = "cronoOrbit"
                ReferencedContainer = "container:cronoOrbit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,6 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5E44F533306CF8370082727A"
             BuildableName = "cronoOrbit.app"
+            BlueprintName = "cronoOrbit"
             ReferencedContainer = "container:cronoOrbit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,6 +64,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5E44F533306CF8370082727A"
             BuildableName = "cronoOrbit.app"
+            BlueprintName = "cronoOrbit"
             ReferencedContainer = "container:cronoOrbit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

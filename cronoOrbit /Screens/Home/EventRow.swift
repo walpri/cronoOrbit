@@ -10,7 +10,7 @@ struct EventRow: View {
     let event: Event
     
     @State private var showEdit = false
-
+    
     @ViewBuilder
     private var statusIcon: some View {
         if event.trackingStart != nil {
@@ -57,23 +57,25 @@ struct EventRow: View {
         .buttonStyle(.plain)
         
         // MARK: Tocco prolungato (gli swipe funzionano solo nelle List, qui siamo in uno ScrollView)
-
-        .contextMenu {
+        
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
             Button {
                 showEdit = true
             } label: {
                 Label("Modifica", systemImage: "pencil")
             }
-
-            Button(role: .destructive) {
-                store.delete(event.id)
-            } label: {
-                Label("Elimina", systemImage: "trash")
+            .swipeActions(edge: . trailing, allowsFullSwipe: true) {
+              
+                Button(role: .destructive) {
+                    store.delete(event.id)
+                } label: {
+                    Label("Elimina", systemImage: "trash")
+                }
             }
-        }
-
-        .sheet(isPresented: $showEdit) {
-            NewEventSheet(eventID: event.id)
+            
+            .sheet(isPresented: $showEdit) {
+                NewEventSheet(eventID: event.id)
+            }
         }
     }
 }

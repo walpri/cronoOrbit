@@ -9,6 +9,8 @@ struct EventDetailView: View {
     @Environment(EventStore.self) private var store
     @Environment(\.dismiss) private var dismiss
 
+    @State private var showEdit = false
+    
     var body: some View {
         if let e = store.events.first(where: { $0.id == id }) {
             ScrollView {
@@ -42,6 +44,15 @@ struct EventDetailView: View {
                     }
                     .padding(16).frame(maxWidth: .infinity, alignment: .leading).glass(26)
 
+                    Button {
+                        showEdit = true
+                    } label: {
+                        Label("Modifica", systemImage: "pencil")
+                            .frame(maxWidth: .infinity, alignment: .leading).padding(16)
+                    }
+                    .glass(22, interactive: true)
+                    
+                    
                     Button(role: .destructive) { store.delete(id); dismiss() } label: {
                         Label("Elimina evento", systemImage: "trash")
                             .frame(maxWidth: .infinity, alignment: .leading).padding(16)
@@ -52,6 +63,9 @@ struct EventDetailView: View {
             }
             .background(AppBackground())
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showEdit){
+                NewEventSheet(eventID: id)
+            }
         }
     }
 
