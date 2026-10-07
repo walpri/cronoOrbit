@@ -63,6 +63,10 @@ struct VerificationCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.weight(.semibold))
                 Text("\(c.actualMinutes) min su \(planned) min").font(.footnote).foregroundStyle(.secondary)
+                if c.status == .done && c.checkedAt > event.verifyDeadline {
+                    Text("Confermato in ritardo: non vale per le medaglie.")
+                        .font(.caption).foregroundStyle(.orange)
+                }
             }
             Spacer()
             Button("Ripristina") { store.clearCompletion(event.id) }
@@ -74,7 +78,7 @@ struct VerificationCard: View {
     @ViewBuilder
     private var actions: some View {
         let now = Date.now
-        if now >= event.start.addingTimeInterval(-30 * 60) && now < event.end && !event.isAllDay {
+        if (Calendar.current.isDateInToday(event.start) || now >= event.start.addingTimeInterval(-30 * 60)) && now < event.end && !event.isAllDay {
             Button { store.startTracking(event.id) } label: {
                 Label("Avvia", systemImage: "play.fill")
                     .font(.subheadline.weight(.semibold))
@@ -86,6 +90,7 @@ struct VerificationCard: View {
         }
         if now >= event.start {
             OutcomeButtons(event: event)
+            VerifyDeadlineLabel(event: event)
         } else {
             Text("Potrai verificarlo quando inizia.").font(.footnote).foregroundStyle(.secondary)
         }
