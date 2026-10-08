@@ -1,8 +1,62 @@
 import SwiftUI
 import Observation
+import EventKit
+import Foundation
+
+
+
+#if os(iOS)
+@MainActor
+public func createSilentAppleCalendarEvent(title: String, start: Date, end: Date, emails: [String]) {
+    // Usiamo Task e await per accontentare i rigidi controlli di Swift 6
+    Task {
+        let eventStore = EKEventStore()
+        
+        do {
+            if #available(iOS 17.0, *) {
+                // Nuovo metodo per iOS 17+
+                let granted = try await eventStore.requestFullAccessToEvents()
+                handleCalendarAccess(granted: granted, eventStore: eventStore, title: title, start: start, end: end, emails: emails)
+            } else {
+                // Vecchio metodo per iOS 16
+                let granted = try await eventStore.requestAccess(to: .event)
+                handleCalendarAccess(granted: granted, eventStore: eventStore, title: title, start: start, end: end, emails: emails)
+            }
+        } catch {
+            print("Errore permessi calendario: \(error)")
+        }
+    }
+}
+
+private func handleCalendarAccess(granted: Bool, eventStore: EKEventStore, title: String, start: Date, end: Date, emails: [String]) {
+    guard granted else {
+        print("Accesso al calendario negato")
+        return
+    }
+    
+    let event = EKEvent(eventStore: eventStore)
+    event.title = title
+    event.startDate = start
+    event.endDate = end
+    
+    guard !emails.isEmpty else { return }
+    
+    event.notes = "Invitati: " + emails.map { "mailto:\($0)" }.joined(separator: ", ")
+    event.calendar = eventStore.defaultCalendarForNewEvents
+    
+    do {
+        try eventStore.save(event, span: .thisEvent)
+        print("Evento salvato silenziosamente nel Calendario Apple!")
+    } catch {
+        print("Errore nel salvare su Apple: \(error.localizedDescription)")
+    }
+}
+#endif
+
+
 
 enum EventCategory: String, CaseIterable, Identifiable, Codable {
-    case focus = "Focus", health = "Salute", work = "Lavoro", social = "Sociale"
+    case focus = "Focus", health = "Salute", work = "Lavoro", social = "Sociale", study = "Studio"
     var id: String { rawValue }
     /// Nome mostrato nell'interfaccia (si traduce con la lingua del sistema)
     var name: LocalizedStringKey {
@@ -11,6 +65,7 @@ enum EventCategory: String, CaseIterable, Identifiable, Codable {
         case .health: "Salute"
         case .work:   "Lavoro"
         case .social: "Sociale"
+        case .study: "Studio"
         }
     }
     /// Nome tradotto come String (grafici e testi composti)
@@ -21,6 +76,7 @@ enum EventCategory: String, CaseIterable, Identifiable, Codable {
         case .health: Color(red: 0.49, green: 1.0, blue: 0.70)
         case .work:   Color(red: 1.0, green: 0.82, blue: 0.40)
         case .social: Color(red: 1.0, green: 0.62, blue: 0.78)
+        case .study: Color(red: 1.0, green: 0.62, blue: 0.78)
         }
     }
 }
@@ -164,6 +220,7 @@ final class EventStore {
         e.completion = EventCompletion(status: minutes * 100 >= planned * 80 ? .done : .partial, actualMinutes: minutes)
         e.trackingStart = nil
         update(e)
+        syncMedals()
     }
 
     /// Esito dichiarato a mano (o dalla notifica).
@@ -179,6 +236,7 @@ final class EventStore {
         e.completion = EventCompletion(status: status, actualMinutes: actual)
         e.trackingStart = nil
         update(e)
+        syncMedals()
     }
 
     /// Esiti arrivati dall'Apple Watch. Non sovrascrive un esito già presente sull'iPhone.
@@ -198,6 +256,7 @@ final class EventStore {
         e.completion = nil
         e.trackingStart = nil
         update(e)
+        syncMedals()
     }
 
     // MARK: Salvataggio su disco (gli impegni restano anche dopo aver chiuso l'app)
@@ -238,5 +297,25 @@ final class EventStore {
             Event(title: "Deep work: Design UI", category: .focus, start: at(1, 11, 30), end: at(1, 13), place: "Studio · Via Solferino 24, Milano", notes: "Sessione senza distrazioni per finalizzare il nuovo flusso mobile.", invited: ["Tu", "Giulia", "Marco"]),
             Event(title: "Aperitivo con amici", category: .social, start: at(2, 19), end: at(2, 21), place: "Centro", invited: ["Tu", "Giulia"])
         ]
+        
+        
+  
     }
+    
+    
+    func syncMedals() {
+        let studyCount = events.filter { $0.category == .study && $0.completion?.status == .done }.count
+        UserDefaults.standard.set(studyCount, forKey: "studyCount")
+        
+        let focusCount = events.filter { $0.category == .focus && $0.completion?.status == .done }.count
+        UserDefaults.standard.set(focusCount, forKey: "focusCount")
+        
+        // Assumo che la categoria sport sia .health
+        let sportCount = events.filter { $0.category == .health && $0.completion?.status == .done }.count
+        UserDefaults.standard.set(sportCount, forKey: "sportCount")
+    }
+
+
+    
+    
 }

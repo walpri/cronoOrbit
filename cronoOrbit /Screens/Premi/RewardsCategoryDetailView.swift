@@ -32,28 +32,40 @@ struct RewardsCategoryDetailView: View {
                         
                         LazyVGrid(columns: columns, spacing: 24) {
                             
+                            let totalBronzi = progress.completedStudyEvents
+                            let totalArgenti = totalBronzi / 5
+                            let totalArancioni = totalBronzi / 7
+                            let totalOri = totalArgenti / 4
+                            let totalPlatini = totalArancioni / 4
+                            
                             if progress.hasGoldStudy {
-                                BadgeItemView(imageName: "PlatinumStudy", title: "Platinum Study", isUnlocked: progress.hasPlatinumStudy, earnedCount: progress.completedStudyEvents, progress: progress.platinumStudyProgress)
+                                BadgeItemView(imageName: "PlatinumStudy", title: "Platinum Study", isUnlocked: progress.hasPlatinumStudy,
+                                              earnedCount: totalPlatini, progress: progress.platinumStudyProgress)
                             }
                             
                             // 4. L'Oro appare se l'Arancione è sbloccato
                             if progress.hasOrangeStudy {
-                                BadgeItemView(imageName: "badgeOroStudy", title: "Gold Study", isUnlocked: progress.hasGoldStudy, earnedCount: progress.completedStudyEvents, progress: progress.goldStudyProgress)
+                                BadgeItemView(imageName: "badgeOroStudy", title: "Gold Study", isUnlocked: progress.hasGoldStudy,
+                                              earnedCount: totalOri, progress: progress.goldStudyProgress)
                             }
                             
                             // 3. L'Arancione appare se l'Argento è sbloccato
                             if progress.hasSilverStudy {
-                                BadgeItemView(imageName: "OrangeStudy", title: "Orange Study", isUnlocked: progress.hasOrangeStudy, earnedCount: progress.completedStudyEvents, progress: progress.orangeStudyProgress)
+                                BadgeItemView(imageName: "OrangeStudy", title: "Orange Study", isUnlocked: progress.hasOrangeStudy,
+                                              earnedCount: totalArancioni, progress: progress.orangeStudyProgress)
                             }
                             
                             // 2. L'Argento appare se il Bronzo è sbloccato
                             if progress.hasBronzeStudy {
-                                BadgeItemView(imageName: "BadgeArgetoStudy", title: "Argento Study", isUnlocked: progress.hasSilverStudy, earnedCount: progress.completedStudyEvents, progress: progress.silverStudyProgress)
+                                BadgeItemView(imageName: "BadgeArgetoStudy", title: "Argento Study", isUnlocked: progress.hasSilverStudy,
+                                              earnedCount: totalArgenti, progress: progress.silverStudyProgress)
                             }
                             
-                            // 1. Il Bronzo è sempre visibile, ma ora viene spinto in fondo
-                            BadgeItemView(imageName: "BadgeStudyBronzo", title: "Bronze Study", isUnlocked: progress.hasBronzeStudy, earnedCount: progress.completedStudyEvents, progress: progress.bronzeStudyProgress)
+                            // 1. Il Bronzo è sempre visibile
+                            BadgeItemView(imageName: "BadgeStudyBronzo", title: "Bronze Study", isUnlocked: progress.hasBronzeStudy,
+                                          earnedCount: totalBronzi, progress: progress.bronzeStudyProgress)
                         }
+
                         .padding(.horizontal)
                     }
                     

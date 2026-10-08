@@ -86,6 +86,8 @@
 		5E9F4E5630750874004DF84B /* RewardsCategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */; };
 		5E9F4E5B3075132F004DF84B /* ProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5A3075132F004DF84B /* ProgressManager.swift */; };
 		5E9F4E5C3075132F004DF84B /* ProgressManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E5A3075132F004DF84B /* ProgressManager.swift */; };
+		5E9F4E6130767197004DF84B /* ContactPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E6030767197004DF84B /* ContactPicker.swift */; };
+		5E9F4E6230767197004DF84B /* ContactPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9F4E6030767197004DF84B /* ContactPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -175,6 +177,7 @@
 		5E9F4E513075084C004DF84B /* MedalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedalDetailView.swift; sourceTree = "<group>"; };
 		5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsCategoryDetailView.swift; sourceTree = "<group>"; };
 		5E9F4E5A3075132F004DF84B /* ProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressManager.swift; sourceTree = "<group>"; };
+		5E9F4E6030767197004DF84B /* ContactPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				50017D523075058D00EA13DB /* NewEventSheet.swift */,
+				5E9F4E6030767197004DF84B /* ContactPicker.swift */,
 			);
 			path = NuovoEvento;
 			sourceTree = "<group>";
@@ -458,7 +462,7 @@
 		5E44F52C306CF8370082727A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
@@ -571,6 +575,7 @@
 				50017D883075058D00EA13DB /* WatchEventStore.swift in Sources */,
 				50017D893075058D00EA13DB /* WatchCalendarImporter.swift in Sources */,
 				50017D8A3075058D00EA13DB /* Models.swift in Sources */,
+				5E9F4E6230767197004DF84B /* ContactPicker.swift in Sources */,
 				50017D8B3075058D00EA13DB /* Glass.swift in Sources */,
 				50017D8C3075058D00EA13DB /* cronoOrbitApp.swift in Sources */,
 			);
@@ -622,6 +627,7 @@
 				50017DAF3075058D00EA13DB /* WatchEventStore.swift in Sources */,
 				50017DB03075058D00EA13DB /* WatchCalendarImporter.swift in Sources */,
 				50017DB13075058D00EA13DB /* Models.swift in Sources */,
+				5E9F4E6130767197004DF84B /* ContactPicker.swift in Sources */,
 				50017DB23075058D00EA13DB /* Glass.swift in Sources */,
 				50017DB33075058D00EA13DB /* cronoOrbitApp.swift in Sources */,
 			);
@@ -943,6 +949,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "serve per importare i calendari";
+				INFOPLIST_KEY_NSContactsUsageDescription = "contatti per invitare ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -977,6 +984,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "serve per importare i calendari";
+				INFOPLIST_KEY_NSContactsUsageDescription = "contatti per invitare ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

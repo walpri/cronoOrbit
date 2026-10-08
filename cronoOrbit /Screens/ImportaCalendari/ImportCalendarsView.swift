@@ -64,7 +64,6 @@ struct ImportCalendarsView: View {
         .padding(24).glass(30).padding()
     }
 
-    // 3) Scelta calendari + opzioni
     private var picker: some View {
         let groups = Dictionary(grouping: importer.calendars, by: { $0.source.title })
         return Form {
