@@ -62,6 +62,10 @@ struct VerificationCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.weight(.semibold))
                 Text("\(c.actualMinutes) min su \(planned) min").font(.footnote).foregroundStyle(.secondary)
+                if c.status == .done && c.checkedAt > event.verifyDeadline {
+                    Text("Confermato in ritardo: non vale per le medaglie.")
+                        .font(.caption).foregroundStyle(.orange)
+                }
             }
             Spacer()
             Button("Ripristina") { store.clearCompletion(event.id) }

@@ -26,11 +26,19 @@ struct cronoOrbitApp: App {
                 // 3. Passa il ProgressManager a tutta l'app
                 .environmentObject(progressManager)
                 .task {
+                    // ogni 20 secondi: se i 15 minuti scadono, la medaglia si annulla anche con l'app aperta
+                    while !Task.isCancelled {
+                        store.refreshMedals()
+                        try? await Task.sleep(for: .seconds(20))
+                    }
+                }
+                .task {
                     await NotificationManager.shared.reschedule(for: store.events)
                     PhoneConnectivity.shared.start(store: store)
                     PhoneConnectivity.shared.send(store.events)
                 }
                 .onChange(of: store.events) { _, new in
+                    store.refreshMedals()
                     PhoneConnectivity.shared.send(new)
                     Task { await NotificationManager.shared.reschedule(for: new) }
                 }

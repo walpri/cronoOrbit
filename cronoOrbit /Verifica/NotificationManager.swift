@@ -40,26 +40,39 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
 
         let pending = await center.pendingNotificationRequests()
         center.removePendingNotificationRequests(
-            withIdentifiers: pending.map { $0.identifier }.filter { $0.hasPrefix("verify-") })
+            withIdentifiers: pending.map { $0.identifier }.filter { $0.hasPrefix("verify-") || $0.hasPrefix("expire-") })
 
-        let upcoming = events
-            .filter { $0.end > .now && $0.completion == nil && !$0.isAllDay }
+        // fino a 30 impegni: ognuno ha 2 notifiche (fine + scadenza) e iOS ne accetta al massimo 64
+        let candidates = events
+            .filter { $0.completion == nil && !$0.isAllDay && $0.verifyDeadline > .now }
             .sorted { $0.end < $1.end }
-            .prefix(40)                                   // iOS permette al massimo 64 notifiche in coda
+            .prefix(30)
 
-        for e in upcoming {
-            let content = UNMutableNotificationContent()
-            content.title = String(localized: "Hai svolto «\(e.title)»?")
-            content.body = String(localized: "Conferma com'è andata: il resoconto settimanale sarà più preciso.")
-            content.sound = .default
-            content.categoryIdentifier = categoryID
-            content.userInfo = ["eventID": e.id.uuidString]
-
-            let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: e.end)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: parts, repeats: false)
-            try? await center.add(UNNotificationRequest(identifier: "verify-\(e.id.uuidString)",
-                                                        content: content, trigger: trigger))
+        for e in candidates {
+            // 1) alla fine: "Hai svolto…?" con risposte rapide
+            if e.end > .now {
+                let ask = UNMutableNotificationContent()
+                ask.title = String(localized: "Hai svolto «\(e.title)»?")
+                ask.body = String(localized: "Hai 15 minuti per confermare: altrimenti non conta per le medaglie.")
+                ask.sound = .default
+                ask.categoryIdentifier = categoryID
+                ask.userInfo = ["eventID": e.id.uuidString]
+                await schedule(ask, id: "verify-\(e.id.uuidString)", at: e.end)
+            }
+            // 2) dopo 15 minuti senza risposta: scaduto
+            let expired = UNMutableNotificationContent()
+            expired.title = String(localized: "Tempo scaduto per «\(e.title)»")
+            expired.body = String(localized: "Non l'hai confermato entro 15 minuti: non conta più per le medaglie.")
+            expired.sound = .default
+            expired.userInfo = ["eventID": e.id.uuidString]
+            await schedule(expired, id: "expire-\(e.id.uuidString)", at: e.verifyDeadline)
         }
+    }
+
+    private func schedule(_ content: UNMutableNotificationContent, id: String, at date: Date) async {
+        let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: parts, repeats: false)
+        try? await center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
     }
 
     // MARK: UNUserNotificationCenterDelegate
