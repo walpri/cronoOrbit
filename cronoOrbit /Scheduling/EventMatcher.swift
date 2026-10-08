@@ -52,7 +52,7 @@ enum EventMatcher {
             let titleWords = tokens(e.title)
             var score = 0
             for w in words {
-                let stem = w.count >= 5 ? String(w.dropLast()) : w      // "palestre" ~ "palestra"
+                let stem = w.count >= 5 ? String(w.dropLast()) : w
                 if title.contains(stem) {
                     score += 2
                 } else if w.count >= 4,
@@ -71,8 +71,28 @@ enum EventMatcher {
         return Array(chosen.sorted { $0.start < $1.start }.prefix(limit))
     }
 
-    /// I prossimi impegni non ancora finiti (per far scegliere all'utente quando non si trova nulla).
+    /// I prossimi impegni. Dà priorità assoluta all'evento avviato manualmente (in corso)!
     static func upcoming(in events: [Event], now: Date = .now, limit: Int = 8) -> [Event] {
-        Array(events.filter { $0.end >= now }.sorted { $0.start < $1.start }.prefix(limit))
+        // 1. Filtriamo gli eventi futuri o in corso che non sono ancora stati completati
+        let validEvents = events.filter { $0.end >= now && $0.completion == nil }
+        
+        // 2. Ordiniamo la lista in modo intelligente
+        let sortedEvents = validEvents.sorted { (event1, event2) in
+            // Se event1 è in corso e event2 no, event1 vince il primo posto
+            if event1.trackingStart != nil && event2.trackingStart == nil {
+                return true
+            }
+            // Se event2 è in corso e event1 no, event2 vince il primo posto
+            else if event1.trackingStart == nil && event2.trackingStart != nil {
+                return false
+            }
+            // Altrimenti, in condizioni normali, li ordiniamo cronologicamente
+            else {
+                return event1.start < event2.start
+            }
+        }
+        
+        return Array(sortedEvents.prefix(limit))
     }
+
 }

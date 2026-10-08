@@ -178,6 +178,7 @@
 		5E9F4E5430750874004DF84B /* RewardsCategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsCategoryDetailView.swift; sourceTree = "<group>"; };
 		5E9F4E5A3075132F004DF84B /* ProgressManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressManager.swift; sourceTree = "<group>"; };
 		5E9F4E6030767197004DF84B /* ContactPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPicker.swift; sourceTree = "<group>"; };
+		5E9F4E633077A9EA004DF84B /* cronoOrbit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "cronoOrbit-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -366,6 +367,7 @@
 		5E44F52B306CF8370082727A = {
 			isa = PBXGroup;
 			children = (
+				5E9F4E633077A9EA004DF84B /* cronoOrbit-Info.plist */,
 				50017D6B3075058D00EA13DB /* cronoOrbit  */,
 				5E44F535306CF8370082727A /* Products */,
 			);
@@ -947,7 +949,7 @@
 				DEVELOPMENT_TEAM = J47YM9N4SK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = "cronoOrbit-Info.plist";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "serve per importare i calendari";
 				INFOPLIST_KEY_NSContactsUsageDescription = "contatti per invitare ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -982,7 +984,7 @@
 				DEVELOPMENT_TEAM = J47YM9N4SK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = "cronoOrbit-Info.plist";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "serve per importare i calendari";
 				INFOPLIST_KEY_NSContactsUsageDescription = "contatti per invitare ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

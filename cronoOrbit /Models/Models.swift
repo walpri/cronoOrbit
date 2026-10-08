@@ -213,30 +213,76 @@ final class EventStore {
     }
 
     /// "Termina": salva i minuti realmente trascorsi. Da 80% della durata prevista in su vale "svolto".
+    // MARK: - Avvio Evento
+    func startTracking(_ id: Event.ID) {
+        // 1. CONTROLLO DI SICUREZZA: C'è già un evento in corso?
+        // Se sì, lo fermiamo automaticamente e lo segniamo "Svolto in parte"
+        if let activeEvent = events.first(where: { $0.trackingStart != nil && $0.id != id }) {
+            setCompletion(activeEvent.id, status: .partial)
+        }
+        
+        // 2. Avvia il nuovo evento
+        guard let index = events.firstIndex(where: { $0.id == id }) else { return }
+        var e = events[index]
+        
+        // 3. AGGIORNA ALLA REALTÀ:
+        // Se lo inizio prima o dopo l'orario previsto, aggiorno l'orario di inizio vero!
+        e.start = .now
+        e.trackingStart = .now
+        
+        // Se la fine prevista ora è nel passato (es. lo inizio in ritardissimo),
+        // spostiamo la fine in avanti per mantenere la durata prevista
+        if e.end <= e.start {
+            let durataPrevista = e.end.timeIntervalSince(e.start)
+            e.end = e.start.addingTimeInterval(durataPrevista > 0 ? durataPrevista : 3600) // default 1 ora
+        }
+        
+        update(e)
+    }
+    
+    // MARK: - Fine Evento Automatica (usata da VerificationCard o Watch)
     func stopTracking(_ id: Event.ID, at date: Date = .now) {
-        guard var e = event(id), let started = e.trackingStart else { return }
+        guard let index = events.firstIndex(where: { $0.id == id }) else { return }
+        var e = events[index]
+        
+        guard let started = e.trackingStart else { return }
+        
+        // Calcoliamo i minuti effettivi trascorsi
         let minutes = max(1, Int(date.timeIntervalSince(started) / 60))
         let planned = max(1, Int(e.duration / 60))
-        e.completion = EventCompletion(status: minutes * 100 >= planned * 80 ? .done : .partial, actualMinutes: minutes)
+        
+        // Se ha fatto almeno l'80% del tempo previsto, lo considera ".done", altrimenti ".partial"
+        let status: CompletionStatus = (minutes * 100 >= planned * 80) ? .done : .partial
+        
+        // AGGIORNA ALLA REALTÀ: Aggiorniamo la fine vera a ORA
+        e.end = .now
+        e.completion = EventCompletion(status: status, actualMinutes: minutes)
         e.trackingStart = nil
+        
         update(e)
-        syncMedals()
+        syncMedals() // Aggiorna le medaglie
     }
 
-    /// Esito dichiarato a mano (o dalla notifica).
+
+    // MARK: - Fine Evento (da bottone o popup)
     func setCompletion(_ id: Event.ID, status: CompletionStatus, minutes: Int? = nil) {
-        guard var e = event(id) else { return }
-        let planned = Int(e.duration / 60)
-        let actual: Int
-        switch status {
-        case .done:    actual = minutes ?? planned
-        case .partial: actual = minutes ?? max(1, planned / 2)
-        case .skipped: actual = 0
+        guard let index = events.firstIndex(where: { $0.id == id }) else { return }
+        var e = events[index]
+        let now = Date.now
+        
+        // AGGIORNA ALLA REALTÀ:
+        if e.trackingStart != nil || (now >= e.start && now < e.end) {
+            e.end = .now
         }
+        
+        let planned = Int(e.duration / 60)
+        let actual = minutes ?? planned
+        
         e.completion = EventCompletion(status: status, actualMinutes: actual)
         e.trackingStart = nil
+        
         update(e)
-        syncMedals()
+        syncMedals() // Aggiorna le medaglie (come abbiamo fatto prima)
     }
 
     /// Esiti arrivati dall'Apple Watch. Non sovrascrive un esito già presente sull'iPhone.

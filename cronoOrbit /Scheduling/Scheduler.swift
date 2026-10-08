@@ -10,10 +10,10 @@ struct TimeSlot: Identifiable, Hashable {
 }
 
 enum SchedulePlan {
-    case free(TimeSlot)                                       // l'orario richiesto è libero
-    case conflict(with: [Event], alternatives: [TimeSlot])    // sei impegnato: ecco le alternative
-    case suggestions([TimeSlot])                              // nessun orario richiesto: ecco i primi liberi
-    case noRoom                                               // nessuno spazio trovato
+    case free(TimeSlot)
+    case conflict(with: [Event], alternatives: [TimeSlot])
+    case suggestions([TimeSlot])                              
+    case noRoom
 }
 
 struct Scheduler {
@@ -24,7 +24,7 @@ struct Scheduler {
 
     /// Gli eventi "tutto il giorno" (>= 20 ore) sono promemoria, non bloccano l'agenda.
     private func blocking(_ events: [Event]) -> [Event] {
-        events.filter { $0.duration < 20 * 3600 }
+        events.filter { $0.duration < 20 * 3600 && $0.completion == nil }
     }
 
     /// Eventi che si sovrappongono all'intervallo indicato.

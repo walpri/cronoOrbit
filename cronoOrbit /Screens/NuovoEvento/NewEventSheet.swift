@@ -20,7 +20,9 @@ struct NewEventSheet: View {
     
     // Interruttori per i popup
     @State private var showContactPicker = false
-        
+    @State private var showShareSheet = false
+    @State private var urlToShare: URL? = nil
+    
     init(eventID: Event.ID? = nil) {
         self.eventID = eventID
     }
@@ -42,7 +44,7 @@ struct NewEventSheet: View {
                     TextField("Posizione", text: $place)
                 }
                 
-                Section("Categoria") {
+                Section("Calendario") {
                     Picker("Categoria", selection: $category) {
                         ForEach(EventCategory.allCases) { Text($0.name).tag($0) }
                     }
@@ -55,10 +57,7 @@ struct NewEventSheet: View {
                 }
                 #endif
                 
-
                 Section(header: Text("Invitati")) {
-                    
-                    // 1. Mostra gli amici che hai già selezionato
                     ForEach(invitedFriends, id: \.self) { nome in
                         HStack {
                             Text(String(nome.prefix(1)))
@@ -71,15 +70,17 @@ struct NewEventSheet: View {
                             Spacer()
                             
                             #if os(iOS)
-                            if let fileURL = generateICSFile(for: title, start: start, end: end, place: place, notes: notes) {
-                                // Pulsante di condivisione WhatsApp/iMessage
-                                ShareLink(item: fileURL) {
-                                    Image(systemName: "square.and.arrow.up")
-                                        .foregroundColor(.blue)
-                                        .padding(6)
-                                        .background(Color.blue.opacity(0.1), in: Circle())
+                            Button {
+                                // Genera il file al momento del click e apre la condivisione
+                                if let fileURL = generateICSFile(for: title, start: start, end: end, place: place, notes: notes) {
+                                    urlToShare = fileURL
+                                    showShareSheet = true
                                 }
-                                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                            } label: {
+                                Image(systemName: "square.and.arrow.up")
+                                    .foregroundColor(.blue)
+                                    .padding(6)
+                                    .background(Color.blue.opacity(0.1), in: Circle())
                             }
                             #endif
                         }
@@ -91,8 +92,6 @@ struct NewEventSheet: View {
                         Label("Scegli Contatto", systemImage: "person.crop.circle.badge.plus")
                     }
                 }
-
-                
             }
             .scrollContentBackground(.hidden)
             .background {
@@ -126,65 +125,32 @@ struct NewEventSheet: View {
                     end = start.addingTimeInterval(3600)
                 }
             }
-            
+            // ==========================================
+            // I MODIFICATORI SHEET ATTACCATI ALLA VISTA
+            // ==========================================
             .sheet(isPresented: $showContactPicker) {
                 #if os(iOS)
-                // Usiamo un array vuoto per le mail visto che ora inviamo via WhatsApp
                 ContactPicker(selectedContacts: $invitedFriends, selectedEmails: .constant([]))
                     .ignoresSafeArea()
                 #else
                 Text("Rubrica non supportata su Apple Watch")
                 #endif
             }
-           
-        }
-    }
+            .sheet(isPresented: $showShareSheet) {
+                #if os(iOS)
+                if let url = urlToShare {
+                    // Invia il file fisico vero e proprio
+                    ActivityViewController(activityItems: ["Ecco l'invito per il nostro evento!", url])
+                        .ignoresSafeArea()
+                        .presentationDetents([.medium, .large])
+                }
+                #endif
+            }
+        } // FINE NAVIGATION STACK
+    } // FINE BODY
     
-    // MARK: - Creazione del File .ICS (Magia dei Calendari)
     
-    // MARK: - Generatore File Calendario (.ics)
-    
-    private func generateICSFile(for title: String, start: Date, end: Date, place: String, notes: String) -> URL? {
-        // Se il titolo è vuoto, non creare il file
-        if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return nil }
-        
-        let cal = Calendar.current
-        let s = allDay ? cal.startOfDay(for: start) : start
-        let e = allDay ? cal.date(byAdding: .minute, value: 1439, to: s)! : max(end, start.addingTimeInterval(900))
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        let icsContent = """
-        BEGIN:VCALENDAR
-        VERSION:2.0
-        PRODID:-//CronoOrbit//App//IT
-        BEGIN:VEVENT
-        DTSTAMP:\(dateFormatter.string(from: Date()))
-        DTSTART:\(dateFormatter.string(from: s))
-        DTEND:\(dateFormatter.string(from: e))
-        SUMMARY:\(title)
-        LOCATION:\(place)
-        DESCRIPTION:\(notes)
-        END:VEVENT
-        END:VCALENDAR
-        """
-        
-        let cleanTitle = title.replacingOccurrences(of: " ", with: "_")
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(cleanTitle).ics")
-        
-        do {
-            try icsContent.write(to: fileURL, atomically: true, encoding: .utf8)
-            return fileURL
-        } catch {
-            print("Errore creazione file ICS: \(error)")
-            return nil
-        }
-    }
-
-    
-    // MARK: - Funzioni di Supporto
+    // MARK: - Funzioni di Supporto (Fuori dal Body!)
     
     private func loadExistingEvent() {
         guard let eventID, let event = store.events.first(where: { $0.id == eventID }) else { return }
@@ -219,7 +185,61 @@ struct NewEventSheet: View {
         }
         dismiss()
     }
+    
+    // MARK: - Generatore File Calendario (.ics)
+    private func generateICSFile(for title: String, start: Date, end: Date, place: String, notes: String) -> URL? {
+        // Se il titolo è vuoto, usa un nome di riserva!
+        let safeTitle = title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Nuovo_Evento" : title
+        
+        let cal = Calendar.current
+        let s = allDay ? cal.startOfDay(for: start) : start
+        let e = allDay ? cal.date(byAdding: .minute, value: 1439, to: s)! : max(end, start.addingTimeInterval(900))
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        let icsContent = """
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        PRODID:-//CronoOrbit//App//IT
+        BEGIN:VEVENT
+        DTSTAMP:\(dateFormatter.string(from: Date()))
+        DTSTART:\(dateFormatter.string(from: s))
+        DTEND:\(dateFormatter.string(from: e))
+        SUMMARY:\(safeTitle)
+        LOCATION:\(place)
+        DESCRIPTION:\(notes)
+        END:VEVENT
+        END:VCALENDAR
+        """
+        
+        let cleanTitle = safeTitle.replacingOccurrences(of: " ", with: "_")
+        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(cleanTitle).ics")
+        
+        do {
+            try icsContent.write(to: fileURL, atomically: true, encoding: .utf8)
+            return fileURL
+        } catch {
+            print("Errore creazione file ICS: \(error)")
+            return nil
+        }
+    }
+} // FINE STRUCT NewEventSheet
+
+// ==========================================
+// PONTE PER LA CONDIVISIONE DI iOS (FUORI DA TUTTO)
+// ==========================================
+#if os(iOS)
+struct ActivityViewController: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    var applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
-
-
+#endif
 

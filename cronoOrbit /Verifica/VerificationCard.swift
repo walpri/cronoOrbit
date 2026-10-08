@@ -74,21 +74,59 @@ struct VerificationCard: View {
     @ViewBuilder
     private var actions: some View {
         let now = Date.now
-        if now >= event.start.addingTimeInterval(-30 * 60) && now < event.end && !event.isAllDay {
-            Button { store.startTracking(event.id) } label: {
-                Label("Avvia", systemImage: "play.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+        // Se l'evento è già completato, non mostriamo i bottoni di avvio
+        if event.completion == nil {
+            
+    
+            let liveEvent = store.events.first(where: { $0.id == event.id }) ?? event
+            let now = Date.now
+
+            // LA MAGIA È QUI: È in corso se l'hai avviato manualmente (pallino rosso)
+            // OPPURE se semplicemente stiamo attraversando il suo orario previsto!
+            let isInCorso = liveEvent.trackingStart != nil || (now >= liveEvent.start && now < liveEvent.end)
+
+            if liveEvent.completion == nil {
+                
+                if isInCorso {
+                    // È IN CORSO: Mostriamo il Menu per terminare
+                    Menu {
+                        Button("Svolto", systemImage: "checkmark.circle.fill") {
+                            store.setCompletion(liveEvent.id, status: .done)
+                        }
+                        Button("Svolto in parte", systemImage: "circle.lefthalf.filled") {
+                            store.setCompletion(liveEvent.id, status: .partial)
+                        }
+                        Button("Non fatto", systemImage: "xmark.circle.fill") {
+                            store.setCompletion(liveEvent.id, status: .skipped)
+                        }
+                    } label: {
+                        Label("Termina attività", systemImage: "stop.fill")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .font(.headline)
+                            .cornerRadius(22)
+                            .glass(18, interactive: true)
+                    }
+                    
+                } else {
+                    // NON È IN CORSO (è nel futuro): Mostriamo il bottone Avvia in anticipo
+                    Button {
+                        store.startTracking(liveEvent.id)
+                    } label: {
+                        Label("Avvia attività", systemImage: "play.fill")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .font(.headline)
+                            .cornerRadius(22)
+                            .glass(18, interactive: true)
+                    }
+                }
             }
-            .buttonStyle(.plain)
-            .glass(18, interactive: true)
+
+
+            
         }
-        if now >= event.start {
-            OutcomeButtons(event: event)
-        } else {
-            Text("Potrai verificarlo quando inizia.").font(.footnote).foregroundStyle(.secondary)
-        }
+
     }
 
     private func clock(_ t: TimeInterval) -> String {
