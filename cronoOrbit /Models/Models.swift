@@ -147,10 +147,7 @@ extension TimeInterval {
 }
 
 /// Esito di un impegno inviato dall'Apple Watch all'iPhone
-struct CompletionUpdate: Codable, Hashable {
-    var id: Event.ID
-    var completion: EventCompletion
-}
+
 
 @Observable
 final class EventStore {
@@ -211,36 +208,29 @@ final class EventStore {
         return awaiting + expired
     }
 
-    func startTracking(_ id: Event.ID, at date: Date = .now) {
-        guard var e = event(id) else { return }
-        e.trackingStart = date
-        e.completion = nil
-        update(e)
-    }
-
-    // MARK: - Avvio Evento
     func startTracking(_ id: Event.ID) {
-        // 1. CONTROLLO DI SICUREZZA: C'è già un evento in corso?
-        // Se sì, lo fermiamo automaticamente e lo segniamo "Svolto in parte"
+        // 1. Ferma in automatico eventuali altri eventi in corso
         if let activeEvent = events.first(where: { $0.trackingStart != nil && $0.id != id }) {
             setCompletion(activeEvent.id, status: .partial)
         }
         
-        // 2. Avvia il nuovo evento
         guard let index = events.firstIndex(where: { $0.id == id }) else { return }
         var e = events[index]
         
-  
-        e.start = .now
-        e.trackingStart = .now
+        // 2. LA MAGIA: Calcoliamo quanto doveva durare l'evento PRIMA di cambiare l'inizio!
+        let durataPrevista = e.end.timeIntervalSince(e.start)
+        let durataSicura = durataPrevista > 0 ? durataPrevista : 3600 // Se c'è un errore, default 1 ora
         
-        if e.end <= e.start {
-            let durataPrevista = e.end.timeIntervalSince(e.start)
-            e.end = e.start.addingTimeInterval(durataPrevista > 0 ? durataPrevista : 3600) // default 1 ora
-        }
+        let adesso = Date.now
+        e.start = adesso
+        e.trackingStart = adesso
+        
+        // 3. Spostiamo la fine esatta nel futuro sommando la durata!
+        e.end = adesso.addingTimeInterval(durataSicura)
         
         update(e)
     }
+
     
     // MARK: - Fine Evento Automatica (usata da VerificationCard o Watch)
     func stopTracking(_ id: Event.ID, at date: Date = .now) {
@@ -288,6 +278,7 @@ final class EventStore {
     }
 
     func applyCompletions(_ updates: [CompletionUpdate]) {
+        let now = Date.now
         var changed = false
         for medal in Medal.allCases {
             let wins = medal.progress(in: events, now: now).isWon
@@ -377,7 +368,11 @@ final class EventStore {
     }
 
 
-    
+    // MARK: - Chiusura Avvisi Medaglie
+    func dismissMedalAlert(_ id: UUID) {
+        medalAlerts.removeAll { $0.id == id }
+    }
+
     
 }
 
@@ -453,6 +448,9 @@ enum Medal: String, CaseIterable, Identifiable, Codable {
         }
         return MedalProgress(confirmed: confirmed, provisional: provisional, goal: goal)
     }
+    
+
+
 }
 
 struct MedalProgress {
@@ -472,3 +470,5 @@ struct MedalAlert: Codable, Identifiable, Hashable {
     var date: Date
     var medalName: String { Medal(rawValue: medalRaw)?.displayName ?? medalRaw }
 }
+
+

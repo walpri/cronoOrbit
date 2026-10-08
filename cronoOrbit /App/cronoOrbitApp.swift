@@ -28,7 +28,7 @@ struct cronoOrbitApp: App {
                 .task {
                     // ogni 20 secondi: se i 15 minuti scadono, la medaglia si annulla anche con l'app aperta
                     while !Task.isCancelled {
-                        store.refreshMedals()
+                        store.syncMedals()
                         try? await Task.sleep(for: .seconds(20))
                     }
                 }
@@ -38,7 +38,7 @@ struct cronoOrbitApp: App {
                     PhoneConnectivity.shared.send(store.events)
                 }
                 .onChange(of: store.events) { _, new in
-                    store.refreshMedals()
+                    store.syncMedals()
                     PhoneConnectivity.shared.send(new)
                     Task { await NotificationManager.shared.reschedule(for: new) }
                 }
