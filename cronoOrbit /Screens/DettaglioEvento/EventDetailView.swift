@@ -2,7 +2,6 @@ import SwiftUI
 
 #if os(iOS) // solo iPhone
 
-// MARK: - Dettaglio evento
 
 struct EventDetailView: View {
     let id: Event.ID

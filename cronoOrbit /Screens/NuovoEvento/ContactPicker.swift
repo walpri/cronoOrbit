@@ -22,7 +22,6 @@ struct ContactPicker: UIViewControllerRepresentable {
         var parent: ContactPicker
         init(_ parent: ContactPicker) { self.parent = parent }
 
-        // Metodo per la selezione multipla
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
             let formatter = CNContactFormatter()
             formatter.style = .fullName

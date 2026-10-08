@@ -81,12 +81,11 @@ enum EventCategory: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-/// Come è andato un impegno
 enum CompletionStatus: String, Codable, Hashable { case done, partial, skipped }
 
 struct EventCompletion: Codable, Hashable {
     var status: CompletionStatus
-    var actualMinutes: Int          // minuti realmente svolti
+    var actualMinutes: Int
     var checkedAt = Date.now
 }
 
@@ -123,7 +122,6 @@ struct Event: Identifiable, Hashable, Codable {
 }
 
 extension Event {
-    /// Frasi mostrate dopo aver confermato un impegno (iPhone e Apple Watch)
     static var motivationalQuotes: [String] {
         [
             String(localized: "Ottimo lavoro! Un passo alla volta."),
@@ -135,7 +133,6 @@ extension Event {
     }
 }
 
-/// Esito di un impegno inviato dall'Apple Watch all'iPhone
 struct CompletionUpdate: Codable, Hashable {
     var id: Event.ID
     var completion: EventCompletion
@@ -153,7 +150,6 @@ extension TimeInterval {
 @Observable
 final class EventStore {
     var events: [Event] = []
-    /// Eventi importati che l'utente ha eliminato: non vanno reimportati
     private(set) var ignoredExternalIDs = Set<String>()
 
     init() {
@@ -161,7 +157,7 @@ final class EventStore {
             events = snap.events
             ignoredExternalIDs = Set(snap.ignored)
         } else {
-            events = EventStore.sample()       // solo al primo avvio
+            events = EventStore.sample()
         }
     }
 
@@ -184,7 +180,6 @@ final class EventStore {
         persist()
     }
 
-    /// Aggiunge solo gli eventi non ancora importati. Ritorna quanti ne ha aggiunti.
     @discardableResult
     func importEvents(_ new: [Event]) -> Int {
         let known = Set(events.compactMap(\.externalID)).union(ignoredExternalIDs)
@@ -194,9 +189,7 @@ final class EventStore {
         return fresh.count
     }
 
-    // MARK: Verifica degli impegni svolti
 
-    /// Impegni finiti negli ultimi 7 giorni di cui non hai ancora confermato l'esito.
     func toVerify(now: Date = .now) -> [Event] {
         let from = now.addingTimeInterval(-7 * 86_400)
         return events
@@ -204,7 +197,6 @@ final class EventStore {
             .sorted { $0.end > $1.end }
     }
 
-    /// "Avvia": da adesso il tempo viene misurato.
     func startTracking(_ id: Event.ID, at date: Date = .now) {
         guard var e = event(id) else { return }
         e.trackingStart = date
@@ -212,7 +204,6 @@ final class EventStore {
         update(e)
     }
 
-    /// "Termina": salva i minuti realmente trascorsi. Da 80% della durata prevista in su vale "svolto".
     // MARK: - Avvio Evento
     func startTracking(_ id: Event.ID) {
         // 1. CONTROLLO DI SICUREZZA: C'è già un evento in corso?
@@ -225,13 +216,10 @@ final class EventStore {
         guard let index = events.firstIndex(where: { $0.id == id }) else { return }
         var e = events[index]
         
-        // 3. AGGIORNA ALLA REALTÀ:
-        // Se lo inizio prima o dopo l'orario previsto, aggiorno l'orario di inizio vero!
+  
         e.start = .now
         e.trackingStart = .now
         
-        // Se la fine prevista ora è nel passato (es. lo inizio in ritardissimo),
-        // spostiamo la fine in avanti per mantenere la durata prevista
         if e.end <= e.start {
             let durataPrevista = e.end.timeIntervalSince(e.start)
             e.end = e.start.addingTimeInterval(durataPrevista > 0 ? durataPrevista : 3600) // default 1 ora
@@ -285,7 +273,6 @@ final class EventStore {
         syncMedals() // Aggiorna le medaglie (come abbiamo fatto prima)
     }
 
-    /// Esiti arrivati dall'Apple Watch. Non sovrascrive un esito già presente sull'iPhone.
     func applyCompletions(_ updates: [CompletionUpdate]) {
         var changed = false
         for u in updates {

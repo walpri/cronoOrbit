@@ -2,7 +2,6 @@ import SwiftUI
 
 #if os(iOS)
 
-// MARK: - Scheda "Verifica" nel dettaglio di un impegno: Avvia/Termina oppure esito manuale
 
 struct VerificationCard: View {
     @Environment(EventStore.self) private var store
@@ -73,16 +72,13 @@ struct VerificationCard: View {
     // Ancora senza esito
     @ViewBuilder
     private var actions: some View {
-        let now = Date.now
-        // Se l'evento è già completato, non mostriamo i bottoni di avvio
         if event.completion == nil {
             
     
             let liveEvent = store.events.first(where: { $0.id == event.id }) ?? event
             let now = Date.now
 
-            // LA MAGIA È QUI: È in corso se l'hai avviato manualmente (pallino rosso)
-            // OPPURE se semplicemente stiamo attraversando il suo orario previsto!
+           
             let isInCorso = liveEvent.trackingStart != nil || (now >= liveEvent.start && now < liveEvent.end)
 
             if liveEvent.completion == nil {
@@ -109,7 +105,6 @@ struct VerificationCard: View {
                     }
                     
                 } else {
-                    // NON È IN CORSO (è nel futuro): Mostriamo il bottone Avvia in anticipo
                     Button {
                         store.startTracking(liveEvent.id)
                     } label: {

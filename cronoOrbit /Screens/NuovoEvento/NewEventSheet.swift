@@ -15,13 +15,10 @@ struct NewEventSheet: View {
     @State private var place = ""
     @State private var notes = ""
     
-    // Variabili per i contatti
     @State private var invitedFriends: [String] = []
     
-    // Interruttori per i popup
     @State private var showContactPicker = false
-    @State private var showShareSheet = false
-    @State private var urlToShare: URL? = nil
+
     
     init(eventID: Event.ID? = nil) {
         self.eventID = eventID
@@ -69,20 +66,20 @@ struct NewEventSheet: View {
                             
                             Spacer()
                             
-                            #if os(iOS)
-                            Button {
-                                // Genera il file al momento del click e apre la condivisione
-                                if let fileURL = generateICSFile(for: title, start: start, end: end, place: place, notes: notes) {
-                                    urlToShare = fileURL
-                                    showShareSheet = true
-                                }
-                            } label: {
-                                Image(systemName: "square.and.arrow.up")
-                                    .foregroundColor(.blue)
-                                    .padding(6)
-                                    .background(Color.blue.opacity(0.1), in: Circle())
-                            }
-                            #endif
+#if os(iOS)
+Button {
+    if let fileURL = generateICSFile(for: title, start: start, end: end, place: place, notes: notes) {
+        presentShareSheet(url: fileURL)
+    }
+} label: {
+    Image(systemName: "square.and.arrow.up")
+        .foregroundColor(.blue)
+        .padding(6)
+        .background(Color.blue.opacity(0.1), in: Circle())
+}
+#endif
+
+                          
                         }
                     }
                     
@@ -125,9 +122,7 @@ struct NewEventSheet: View {
                     end = start.addingTimeInterval(3600)
                 }
             }
-            // ==========================================
-            // I MODIFICATORI SHEET ATTACCATI ALLA VISTA
-            // ==========================================
+          
             .sheet(isPresented: $showContactPicker) {
                 #if os(iOS)
                 ContactPicker(selectedContacts: $invitedFriends, selectedEmails: .constant([]))
@@ -136,18 +131,9 @@ struct NewEventSheet: View {
                 Text("Rubrica non supportata su Apple Watch")
                 #endif
             }
-            .sheet(isPresented: $showShareSheet) {
-                #if os(iOS)
-                if let url = urlToShare {
-                    // Invia il file fisico vero e proprio
-                    ActivityViewController(activityItems: ["Ecco l'invito per il nostro evento!", url])
-                        .ignoresSafeArea()
-                        .presentationDetents([.medium, .large])
-                }
-                #endif
-            }
-        } // FINE NAVIGATION STACK
-    } // FINE BODY
+           
+        }
+    }
     
     
     // MARK: - Funzioni di Supporto (Fuori dal Body!)
@@ -188,7 +174,7 @@ struct NewEventSheet: View {
     
     // MARK: - Generatore File Calendario (.ics)
     private func generateICSFile(for title: String, start: Date, end: Date, place: String, notes: String) -> URL? {
-        // Se il titolo è vuoto, usa un nome di riserva!
+       
         let safeTitle = title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Nuovo_Evento" : title
         
         let cal = Calendar.current
@@ -225,21 +211,39 @@ struct NewEventSheet: View {
             return nil
         }
     }
-} // FINE STRUCT NewEventSheet
-
-// ==========================================
-// PONTE PER LA CONDIVISIONE DI iOS (FUORI DA TUTTO)
-// ==========================================
-#if os(iOS)
-struct ActivityViewController: UIViewControllerRepresentable {
-    var activityItems: [Any]
-    var applicationActivities: [UIActivity]? = nil
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+    
+    
+ 
+   
+    #if os(iOS)
+    private func presentShareSheet(url: URL) {
+        let activityVC = UIActivityViewController(activityItems: ["Ecco l'invito per il nostro evento!", url], applicationActivities: nil)
+        
+        // 1. Trova la finestra principale
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first(where: { $0.isKeyWindow }) {
+            
+            // 2. LA MAGIA È QUI: Cerca il ViewController in cima a tutto (la tua schermata "Modifica evento")
+            // In questo modo evitiamo l'errore "is already presenting"
+            var topController = window.rootViewController
+            while let presented = topController?.presentedViewController {
+                topController = presented
+            }
+            
+            // 3. Risolve i warning gialli di UIScreen.main usando window.bounds
+            activityVC.popoverPresentationController?.sourceView = window
+            activityVC.popoverPresentationController?.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
+            
+            // 4. Mostra la condivisione sopra a tutto
+            topController?.present(activityVC, animated: true)
+        }
     }
+    #endif
 
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+   
+
+    
 }
-#endif
+
+
 

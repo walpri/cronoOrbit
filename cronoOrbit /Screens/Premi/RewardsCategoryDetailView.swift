@@ -39,7 +39,7 @@ struct RewardsCategoryDetailView: View {
                             let totalPlatini = totalArancioni / 4
                             
                             if progress.hasGoldStudy {
-                                BadgeItemView(imageName: "PlatinumStudy", title: "Platinum Study", isUnlocked: progress.hasPlatinumStudy,
+                                BadgeItemView(imageName: "badge_studyLegend", title: "Platinum Study", isUnlocked: progress.hasPlatinumStudy,
                                               earnedCount: totalPlatini, progress: progress.platinumStudyProgress)
                             }
                             
@@ -51,7 +51,7 @@ struct RewardsCategoryDetailView: View {
                             
                             // 3. L'Arancione appare se l'Argento è sbloccato
                             if progress.hasSilverStudy {
-                                BadgeItemView(imageName: "OrangeStudy", title: "Orange Study", isUnlocked: progress.hasOrangeStudy,
+                                BadgeItemView(imageName: "arancioneStudy", title: "Orange Study", isUnlocked: progress.hasOrangeStudy,
                                               earnedCount: totalArancioni, progress: progress.orangeStudyProgress)
                             }
                             
@@ -79,7 +79,7 @@ struct RewardsCategoryDetailView: View {
                         LazyVGrid(columns: columns, spacing: 24) {
                             
                             if progress.hasGoldFocus {
-                                BadgeItemView(imageName: "PlatinumFocus", title: "Platinum Focus", isUnlocked: progress.hasPlatinumFocus, earnedCount: progress.completedFocusEvents, progress: progress.platinumFocusProgress)
+                                BadgeItemView(imageName: "badge_focusLegend", title: "Platinum Focus", isUnlocked: progress.hasPlatinumFocus, earnedCount: progress.completedFocusEvents, progress: progress.platinumFocusProgress)
                             }
                             if progress.hasOrangeFocus {
                                 BadgeItemView(imageName: "FOCUS", title: "Gold Focus", isUnlocked: progress.hasGoldFocus, earnedCount: progress.completedFocusEvents, progress: progress.goldFocusProgress)
@@ -105,7 +105,7 @@ struct RewardsCategoryDetailView: View {
                         LazyVGrid(columns: columns, spacing: 24) {
                             
                             if progress.hasGoldSport {
-                                BadgeItemView(imageName: "PlatinumSport", title: "Platinum Sport", isUnlocked: progress.hasPlatinumSport, earnedCount: progress.completedSportEvents, progress: progress.platinumSportProgress)
+                                BadgeItemView(imageName: "badge_SportLegend 1", title: "Platinum Sport", isUnlocked: progress.hasPlatinumSport, earnedCount: progress.completedSportEvents, progress: progress.platinumSportProgress)
                             }
                             if progress.hasOrangeSport {
                                 BadgeItemView(imageName: "badgeSportGold", title: "Gold Sport", isUnlocked: progress.hasGoldSport, earnedCount: progress.completedSportEvents, progress: progress.goldSportProgress)
