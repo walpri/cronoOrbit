@@ -8,7 +8,6 @@ import Foundation
 #if os(iOS)
 @MainActor
 public func createSilentAppleCalendarEvent(title: String, start: Date, end: Date, emails: [String]) {
-    // Usiamo Task e await per accontentare i rigidi controlli di Swift 6
     Task {
         let eventStore = EKEventStore()
         
@@ -397,14 +396,15 @@ extension Event {
         !isAllDay && completion == nil && trackingStart == nil && now > verifyDeadline
     }
 
-    /// Solo gli impegni "Fatto" e confermati in tempo contano per le medaglie.
-    /// Mentre i 15 minuti scorrono il credito è provvisorio.
+    
     func medalCredit(now: Date = .now) -> MedalCredit {
         if let c = completion {
-            return (c.status == .done && c.checkedAt <= verifyDeadline) ? .confirmed : .none
+            // Se lo hai completato (.done), ti dà la medaglia senza guardare l'orario!
+            return (c.status == .done) ? .confirmed : .none
         }
         return isAwaitingVerification(now: now) ? .provisional : .none
     }
+
 }
 
 enum Medal: String, CaseIterable, Identifiable, Codable {

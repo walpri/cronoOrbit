@@ -11,137 +11,122 @@ struct RewardsView: View {
     ]
     
     var body: some View {
-        // si aggiorna ogni 15 secondi: lo stato provvisorio può scadere anche senza altre modifiche
-        TimelineView(.periodic(from: .now, by: 15)) { ctx in
-            content(now: ctx.date)
+        NavigationStack {
+            TimelineView(.periodic(from: .now, by: 15)) { ctx in
+                content(now: ctx.date)
+            }
         }
     }
+
     
     private func content(now: Date) -> some View {
         ZStack {
-            // Sfondo chiaro con una sfumatura molto leggera (simile allo screenshot)
-          /*  LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.05), Color.orange.opacity(0.05)]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )*/
-           
             
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
                     
                     // Titolo
-                    Text("Awards")
+                    Text("Rewards")
                         .font(.system(size: 34, weight: .bold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                         .padding(.top, 10)
-                    
-                    // Card Principale: To be won
-                    HStack(spacing: 12) {
-                    
-                        Image("badgeOroStudy")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 70, height: 70)
                         
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("To be won")
-                                .font(.system(size: 18, weight: .bold))
+                    NavigationLink(destination: MedalDetailView()){
+                        
+                        // Card Principale: To be won
+                        HStack(spacing: 12) {
+                            
+                            Image("badgeOroStudy")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 70, height: 70)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("To be won")
+                                    .font(.system(size: 18, weight: .bold))
                                 
+                                
+                                Text("\"The next milestone\nis just waiting for your energy\"")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.gray)
+                                    .italic()
+                                    .fixedSize(horizontal: true, vertical: false)
+                            }
                             
-                            Text("\"The next milestone\nis just waiting for your energy\"")
-                                .font(.system(size: 10))
-                                .foregroundColor(.gray)
-                                .italic()
-                                .fixedSize(horizontal: true, vertical: false)
-                        }
-                        
-                        Spacer()
-                        
-                        HStack(spacing: -30){
+                            Spacer()
                             
-                            // Immagine dei badge disattivati/legend
-                            Image("badge_studyLegend") // Sostituisci con l'immagine di gruppo corretta se necessario
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 50)
-                                .grayscale(1.0)
-                                .fixedSize(horizontal: true, vertical: false)
-                              
-                            Image("arancioneSport")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 50)
-                                .grayscale(1.0)
-                                .fixedSize(horizontal: true, vertical: false)
-                              
-                            Image("FOCUS")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 50)
-                                .grayscale(1.0)
-                                .fixedSize(horizontal: true, vertical: false)
+                            HStack(spacing: -30){
+                                
+                                // Immagine dei badge disattivati/legend
+                                Image("badge_studyLegend")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 50)
+                                    .grayscale(1.0)
+                                    .fixedSize(horizontal: true, vertical: false)
+                                
+                                Image("arancioneSport")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 50)
+                                    .grayscale(1.0)
+                                    .fixedSize(horizontal: true, vertical: false)
+                                
+                                Image("FOCUS")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 50)
+                                    .grayscale(1.0)
+                                    .fixedSize(horizontal: true, vertical: false)
+                            }
+                            
                         }
-                       
-                    }
-                    .padding()
-                    .glass(24)
-                    .padding(.horizontal)
-                    
-                    
-                    // Medaglie annullate: un impegno non è stato confermato entro 15 minuti
-                    ForEach(store.medalAlerts) { alert in
-                        HStack(alignment: .top, spacing: 10) {
-                            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red)
-                            Text("Medaglia \(alert.medalName) annullata: «\(alert.eventTitle)» non è stata confermata entro 15 minuti.")
-                                .font(.footnote)
-                            Spacer(minLength: 0)
-                            Button { store.dismissMedalAlert(alert.id) } label: { Image(systemName: "xmark") }
-                                .buttonStyle(.plain)
-                        }
-                        .padding(14)
-                        .glass(20)
+                        .padding()
+                        .glass(24)
                         .padding(.horizontal)
                     }
+                    .buttonStyle(.plain)
+                    
+                   
                     
                     // Griglia dei Premi (Study, Sport, Deep Focus)
                     LazyVGrid(columns: columns, spacing: 16) {
+                      
+                        NavigationLink(destination: RewardsCategoryDetailView()) {
+                            // Card Study
+                            RewardCardView(
+                                category: "STUDY",
+                                imageName: "BadgeArgetoStudy",
+                                title: "Obiettivo Study",
+                                progress: Medal.study.progress(in: store.events, now: now)
+                            )
+                        }.buttonStyle(.plain)
                         
-                        // Card Study
-                        RewardCardView(
-                            category: "STUDY",
-                            imageName: "BadgeArgetoStudy", // Asset Argento
-                            title: "Obiettivo Study",
-                            progress: Medal.study.progress(in: store.events, now: now)
-                        )
+                        NavigationLink(destination: RewardsCategoryDetailView()) {
+                            // Card Sport
+                            RewardCardView(
+                                category: "SPORT",
+                                imageName: "badgeSportGold",
+                                title: "Obiettivo Sport",
+                                progress: Medal.sport.progress(in: store.events, now: now)
+                            )
+                        }.buttonStyle(.plain)
                         
-                        // Card Sport
-                        RewardCardView(
-                            category: "SPORT",
-                            imageName: "badgeSportGold", // Asset Oro
-                            title: "Obiettivo Sport",
-                            progress: Medal.sport.progress(in: store.events, now: now)
-                        )
-                        
-                        // Card Deep Focus
-                        RewardCardView(
-                            category: "DEEP FOCUS",
-                            imageName: "focusArancione", // Asset Arancione/Bronzo
-                            title: "Obiettivo Deep\nFocus",
-                            progress: Medal.deepFocus.progress(in: store.events, now: now)
-                        )
+                        NavigationLink(destination: RewardsCategoryDetailView()) {
+                            // Card Deep Focus
+                            RewardCardView(
+                                category: "DEEP FOCUS",
+                                imageName: "focusArancione", // Asset Arancione/Bronzo
+                                title: "Obiettivo Deep\nFocus",
+                                progress: Medal.deepFocus.progress(in: store.events, now: now)
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                     .padding(.horizontal)
                     
-                    Text("Conferma ogni impegno entro 15 minuti dalla fine: altrimenti non conta per le medaglie.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 24)
-                    
-                    // Spazio extra in basso per non coprire le card con la TabBar custom
-                    Spacer().frame(height: 100)
+          
                 }
             } .background(AppBackground())
               
@@ -168,8 +153,7 @@ struct RewardCardView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(height: 85)
-                .grayscale(progress.isWon ? 0 : 1)          // bloccata finché non è vinta
-                .opacity(progress.isWon ? 1 : 0.55)
+               
             
             // Testo in basso
             Text(title)
@@ -177,11 +161,7 @@ struct RewardCardView: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
             
-            // Avanzamento: impegni confermati su quelli richiesti
-            Text(verbatim: "\(min(progress.total, progress.goal))/\(progress.goal)")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.gray)
-            
+           
             if progress.isProvisional {
                 Label("In attesa di conferma", systemImage: "hourglass")
                     .font(.caption2.weight(.semibold))
