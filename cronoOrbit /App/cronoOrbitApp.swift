@@ -5,23 +5,40 @@ import SwiftUI
 @main
 struct cronoOrbitApp: App {
     @State private var store: EventStore
-
+    
+    // 1. Inizializza il ProgressManager qui
+    @StateObject private var progressManager = ProgressManager()
+    
     init() {
         let s = EventStore()
         _store = State(initialValue: s)
-        NotificationManager.shared.start(store: s)      // risposte alle notifiche anche ad app chiusa
+        
+        // 2. Modifica la chiamata per passare ENTRAMBI al NotificationManager
+        // Nota: Assicurati di aver fatto la Modifica 3 in NotificationManager.swift come spiegato prima!
+        // Se non l'hai fatta, per ora commenta questa riga o togli ', progress: progressManager'
+        NotificationManager.shared.start(store: s, progress: ProgressManager())
     }
-
+    
     var body: some Scene {
         WindowGroup {
-            RootView()
+            RootView() // Questa è la tua vista iniziale vera
                 .environment(store)
+                // 3. Passa il ProgressManager a tutta l'app
+                .environmentObject(progressManager)
+                .task {
+                    // ogni 20 secondi: se i 15 minuti scadono, la medaglia si annulla anche con l'app aperta
+                    while !Task.isCancelled {
+                        store.syncMedals()
+                        try? await Task.sleep(for: .seconds(20))
+                    }
+                }
                 .task {
                     await NotificationManager.shared.reschedule(for: store.events)
                     PhoneConnectivity.shared.start(store: store)
                     PhoneConnectivity.shared.send(store.events)
                 }
                 .onChange(of: store.events) { _, new in
+                    store.syncMedals()
                     PhoneConnectivity.shared.send(new)
                     Task { await NotificationManager.shared.reschedule(for: new) }
                 }
@@ -29,3 +46,4 @@ struct cronoOrbitApp: App {
     }
 }
 #endif
+

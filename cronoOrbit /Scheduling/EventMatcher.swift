@@ -1,6 +1,5 @@
 import Foundation
 
-/// Trova nell'agenda l'impegno a cui si riferisce l'utente ("la palestra", "lo studio di domani"…).
 enum EventMatcher {
     private static let stopwords: Set<String> = [
         "con", "per", "del", "della", "dello", "dei", "degli", "delle", "gli", "una", "uno",
@@ -52,12 +51,12 @@ enum EventMatcher {
             let titleWords = tokens(e.title)
             var score = 0
             for w in words {
-                let stem = w.count >= 5 ? String(w.dropLast()) : w      // "palestre" ~ "palestra"
+                let stem = w.count >= 5 ? String(w.dropLast()) : w
                 if title.contains(stem) {
                     score += 2
                 } else if w.count >= 4,
                           titleWords.contains(where: { $0.count >= 4 && distance(w, $0) <= (w.count >= 7 ? 2 : 1) }) {
-                    score += 1                                          // refuso
+                    score += 1
                 }
             }
             return (e, score)
@@ -71,8 +70,24 @@ enum EventMatcher {
         return Array(chosen.sorted { $0.start < $1.start }.prefix(limit))
     }
 
-    /// I prossimi impegni non ancora finiti (per far scegliere all'utente quando non si trova nulla).
     static func upcoming(in events: [Event], now: Date = .now, limit: Int = 8) -> [Event] {
-        Array(events.filter { $0.end >= now }.sorted { $0.start < $1.start }.prefix(limit))
+        // 1. Filtriamo gli eventi futuri o in corso che non sono ancora stati completati
+        let validEvents = events.filter { $0.end >= now && $0.completion == nil }
+        
+        let sortedEvents = validEvents.sorted { (event1, event2) in
+            // Se event1 è in corso e event2 no, event1 vince il primo posto
+            if event1.trackingStart != nil && event2.trackingStart == nil {
+                return true
+            }
+            else if event1.trackingStart == nil && event2.trackingStart != nil {
+                return false
+            }
+            else {
+                return event1.start < event2.start
+            }
+        }
+        
+        return Array(sortedEvents.prefix(limit))
     }
+
 }

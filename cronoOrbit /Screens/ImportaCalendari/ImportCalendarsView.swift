@@ -43,7 +43,7 @@ struct ImportCalendarsView: View {
         VStack(spacing: 16) {
             Image(systemName: "calendar.badge.plus").font(.system(size: 52))
             Text("Porta i tuoi impegni qui").font(.title2.bold())
-            Text("Collega i calendari già presenti sul telefono (iCloud, Google, Outlook). Li leggiamo soltanto, non modifichiamo nulla.")
+            Text("Collega i calendari già presenti sul telefono!")
                 .font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
             Button("Consenti accesso") { Task { await importer.requestAccess() } }
                 .buttonStyle(.borderedProminent)
@@ -64,7 +64,6 @@ struct ImportCalendarsView: View {
         .padding(24).glass(30).padding()
     }
 
-    // 3) Scelta calendari + opzioni
     private var picker: some View {
         let groups = Dictionary(grouping: importer.calendars, by: { $0.source.title })
         return Form {

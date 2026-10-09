@@ -180,7 +180,12 @@ struct WatchDayRing: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             let now = context.date
-            let currentEvent = events.first { $0.start <= now && now < $0.end }
+            let currentEvent = events.first {
+                $0.trackingStart != nil && $0.completion == nil
+            } ?? events.first {
+                $0.start <= now && now < $0.end && $0.completion == nil
+            }
+
             let nextEvent = events.first { $0.start > now }
 
             ZStack {

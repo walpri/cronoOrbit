@@ -2,10 +2,10 @@ import SwiftUI
 
 #if os(iOS)
 
-// MARK: - Scheda "Verifica" nel dettaglio di un impegno: Avvia/Termina oppure esito manuale
 
 struct VerificationCard: View {
     @Environment(EventStore.self) private var store
+    @EnvironmentObject var progress: ProgressManager
     let event: Event
 
     var body: some View {
@@ -35,7 +35,9 @@ struct VerificationCard: View {
                 }
             }
             Spacer()
-            Button { store.stopTracking(event.id) } label: {
+            Button { store.stopTracking(event.id)
+                progress.completeEvent(category: event.category.title)
+            } label: {
                 Label("Termina", systemImage: "stop.fill")
                     .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 14).padding(.vertical, 10)
@@ -60,6 +62,10 @@ struct VerificationCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.weight(.semibold))
                 Text("\(c.actualMinutes) min su \(planned) min").font(.footnote).foregroundStyle(.secondary)
+                if c.status == .done && c.checkedAt > event.verifyDeadline {
+                    Text("Confermato in ritardo: non vale per le medaglie.")
+                        .font(.caption).foregroundStyle(.orange)
+                }
             }
             Spacer()
             Button("Ripristina") { store.clearCompletion(event.id) }
@@ -70,22 +76,56 @@ struct VerificationCard: View {
     // Ancora senza esito
     @ViewBuilder
     private var actions: some View {
-        let now = Date.now
-        if now >= event.start.addingTimeInterval(-30 * 60) && now < event.end && !event.isAllDay {
-            Button { store.startTracking(event.id) } label: {
-                Label("Avvia", systemImage: "play.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+        if event.completion == nil {
+            
+    
+            let liveEvent = store.events.first(where: { $0.id == event.id }) ?? event
+            let now = Date.now
+
+           
+            let isInCorso = liveEvent.trackingStart != nil || (now >= liveEvent.start && now < liveEvent.end)
+
+            if liveEvent.completion == nil {
+                
+                if isInCorso {
+                    // È IN CORSO: Mostriamo il Menu per terminare
+                    Menu {
+                        Button("Svolto", systemImage: "checkmark.circle.fill") {
+                            store.setCompletion(liveEvent.id, status: .done)
+                        }
+                        Button("Svolto in parte", systemImage: "circle.lefthalf.filled") {
+                            store.setCompletion(liveEvent.id, status: .partial)
+                        }
+                        Button("Non fatto", systemImage: "xmark.circle.fill") {
+                            store.setCompletion(liveEvent.id, status: .skipped)
+                        }
+                    } label: {
+                        Label("Termina attività", systemImage: "stop.fill")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .font(.headline)
+                            .cornerRadius(22)
+                            .glass(18, interactive: true)
+                    }
+                    
+                } else {
+                    Button {
+                        store.startTracking(liveEvent.id)
+                    } label: {
+                        Label("Avvia attività", systemImage: "play.fill")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .font(.headline)
+                            .cornerRadius(22)
+                            .glass(18, interactive: true)
+                    }
+                }
             }
-            .buttonStyle(.plain)
-            .glass(18, interactive: true)
+
+
+            
         }
-        if now >= event.start {
-            OutcomeButtons(event: event)
-        } else {
-            Text("Potrai verificarlo quando inizia.").font(.footnote).foregroundStyle(.secondary)
-        }
+
     }
 
     private func clock(_ t: TimeInterval) -> String {

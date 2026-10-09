@@ -8,7 +8,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "cronoOrbit watch"
+            "value" : "lore-shgiu-shguhaspUGFHPu"
           }
         }
       }
@@ -56,6 +56,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Serve per importare i tuoi impegni in cronoOrbit"
+          }
+        }
+      }
+    },
+    "NSContactsUsageDescription" : {
+      "comment" : "Privacy - Contacts Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "contatti per invitare "
           }
         }
       }

@@ -150,7 +150,6 @@ struct MedalDetailView: View {
                     
             
                     // --- Sezione SPORT ---
-                    // ==========================================
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Sport")
                             .font(.system(size: 34, weight: .bold))
@@ -212,6 +211,8 @@ struct MedalDetailView: View {
         // GESTIONE DEL POP-UP (SHEET)
         .sheet(item: $medalToShow) { medal in
             MedalPopupView(medal: medal)
+            
+                .presentationDetents([.medium, .large])
         }
     }
 }
@@ -232,7 +233,7 @@ struct SimpleBadgeView: View {
             
             Text(title)
                 .font(.system(size: 11, weight: .bold))
-                .foregroundColor(.primary) // Assicura che il testo non diventi blu
+                .foregroundColor(.primary) 
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -246,7 +247,7 @@ struct MedalPopupView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack() {
             
             // Bottone "X" in alto a destra per chiudere
             HStack {

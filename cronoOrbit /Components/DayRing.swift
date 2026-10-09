@@ -17,21 +17,23 @@ struct DayRing: View {
             
             let now = context.date
             
-            // Evento attualmente in corso
+            // Evento attualmente in corso: diamo priorità a quello avviato manualmente!
             let currentEvent = events.first {
-                $0.start <= now && now < $0.end
+                $0.trackingStart != nil && $0.completion == nil
+            } ?? events.first {
+                $0.start <= now && now < $0.end && $0.completion == nil
             }
             
             // Primo evento che deve ancora iniziare
             let nextEvent = events.first {
-                $0.start > now
+                $0.start > now && $0.completion == nil
             }
+
             
             ZStack {
                 
-                // =====================================================
                 // ANELLO SEMI-TRASPARENTE FISSO
-                // =====================================================
+                
                 
                 Circle()
                     .stroke(
@@ -40,9 +42,9 @@ struct DayRing: View {
                     )
                 
                 
-                // =====================================================
+                
                 // ANELLO BLU PROGRESSIVO
-                // =====================================================
+                
                 
                 if let event = currentEvent {
                     
@@ -59,11 +61,7 @@ struct DayRing: View {
                         max(elapsed / totalDuration, 0),
                         1
                     )
-                    
-                    // =================================================
-                    // IL BLU PARTE DALL'INIZIO DELL'EVENTO
-                    // E PERCORRE PROGRESSIVAMENTE TUTTO IL RING
-                    // =================================================
+              
                     
                     Circle()
                         .trim(
@@ -92,10 +90,8 @@ struct DayRing: View {
                         )
                 }
                 
-                
-                // =====================================================
+            
                 // TESTO CENTRALE
-                // =====================================================
                 
                 centerContent(
                     now: now,
@@ -122,9 +118,7 @@ struct DayRing: View {
         nextEvent: Event?
     ) -> some View {
         
-        // =========================================================
         // EVENTO IN CORSO
-        // =========================================================
         
         if let event = currentEvent {
             
@@ -165,10 +159,7 @@ struct DayRing: View {
             .padding(.horizontal, 40)
             
             
-        // =========================================================
-        // NESSUN EVENTO IN CORSO → PROSSIMO EVENTO
-        // =========================================================
-        
+   
         } else if let event = nextEvent {
             
             VStack(spacing: 5) {
@@ -204,9 +195,8 @@ struct DayRing: View {
             .padding(.horizontal, 40)
             
             
-        // =========================================================
         // NESSUN ALTRO EVENTO
-        // =========================================================
+        
         
         } else {
             
@@ -295,8 +285,6 @@ struct DayRing: View {
             
         } else {
             
-            // Se è un altro giorno →
-            // data + orario
             
             return event.start.formatted(
                 .dateTime
